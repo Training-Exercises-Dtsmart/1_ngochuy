@@ -8,6 +8,29 @@ $config = [
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'controllerNamespace' => 'app\commands',
+    'controllerMap' => [
+        'migrate' => [
+            'class' => 'yii\console\controllers\MigrateController',
+            'interactive' => false,
+            'migrationPath' => [
+                '@app/migrations', // path to your custom migrations directory
+            ],
+        ],
+        'batch' => [
+            'class' => 'schmunk42\giiant\commands\BatchController',
+            'interactive' => false,
+            'overwrite' => true,
+            'skipTables' => ['system_db_migration', 'system_rbac_migration', 'migration'],
+            'modelNamespace' => 'app\models',
+            'crudTidyOutput' => false,
+            'useTranslatableBehavior' => true,
+            'useTimestampBehavior' => true,
+            'enableI18N' => false,
+            'modelQueryNamespace' => 'app\models',
+            'modelBaseClass' => yii\db\ActiveRecord::class,
+            'modelQueryBaseClass' => yii\db\ActiveQuery::class
+        ],
+    ],
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',

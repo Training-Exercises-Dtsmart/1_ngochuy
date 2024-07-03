@@ -24,9 +24,9 @@ class m240702_094317_create_products_table extends Migration
             'is_best_sell' => $this->boolean(),
             'product_status' => $this->boolean(),
             'user_id' => $this->integer(),
-            'created_at' => $this->timestamp(),
-            'updated_at' => $this->timestamp(),
-            'deleted_at' => $this->timestamp(),
+            'created_at' => $this->dateTime(),
+            'updated_at' => $this->dateTime(),
+            'deleted_at' => $this->dateTime(),
         ]);
 
          // creates index for column `category_product_id`
