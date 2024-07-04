@@ -25,3 +25,22 @@
 <img width="932" alt="Ảnh màn hình 2024-07-03 lúc 17 33 25" src="https://github.com/Training-Exercises-Dtsmart/1_ngochuy/assets/145101998/860e37ab-7159-4df4-82d0-d2d017cb2084">
 
 <img width="852" alt="Ảnh màn hình 2024-07-03 lúc 17 33 37" src="https://github.com/Training-Exercises-Dtsmart/1_ngochuy/assets/145101998/d74f90dd-ff9b-4c35-b06c-048ad1f6f3ab">
+
+
+
+--------------------------------------
+
+*** Day 4:
+
+- Create Filter & Search Function
+  
+<img width="1048" alt="Ảnh màn hình 2024-07-04 lúc 17 38 29" src="https://github.com/Training-Exercises-Dtsmart/1_ngochuy/assets/145101998/a51215e9-083f-4bc3-b5e3-446089147754">
+
+
+- Pagination with Serilizer
+
+<img width="1016" alt="Ảnh màn hình 2024-07-04 lúc 17 37 23" src="https://github.com/Training-Exercises-Dtsmart/1_ngochuy/assets/145101998/fa545ffa-59e6-47ff-a306-24588330c517">
+
+  
+
+  
