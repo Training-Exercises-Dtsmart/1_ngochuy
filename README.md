@@ -43,4 +43,18 @@
 
   
 
+--------------------------------------
+
+*** Day 5: 
+
+- Define Module Product :
+
+  <img width="311" alt="Ảnh màn hình 2024-07-05 lúc 22 31 36" src="https://github.com/Training-Exercises-Dtsmart/1_ngochuy/assets/145101998/fd740c67-9201-498b-b2c2-743d1a2e5685">
+
+
+- Create method function in product controller of module :
+  
+<img width="1337" alt="Ảnh màn hình 2024-07-05 lúc 22 36 03" src="https://github.com/Training-Exercises-Dtsmart/1_ngochuy/assets/145101998/d3649ca2-3a20-467c-a3e8-8a7be157564e">
+
+  
   
