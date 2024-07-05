@@ -53,6 +53,7 @@ $config = [
             ],
         ],
     ],
+    'modules' => [ 'product' => [ 'class' => 'app\modules\product\Module', ]],
     'params' => $params,
 ];
 

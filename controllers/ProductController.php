@@ -53,7 +53,7 @@ class ProductController extends Controller
             ],
             'sort' => [
                 'defaultOrder' => [
-                    'id' => SORT_DESC,
+                    'id' => SORT_ASC,
                 ],
             ],
         ]);
