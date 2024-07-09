@@ -1,4 +1,4 @@
-<img width="1345" alt="Ảnh màn hình 2024-07-09 lúc 16 19 29" src="https://github.com/Training-Exercises-Dtsmart/1_ngochuy/assets/145101998/f8d957e3-563c-4faf-85c8-3fcc1748fa8d">*** Day 2: 
+*** Day 2: 
 
 - Schema database :
   
