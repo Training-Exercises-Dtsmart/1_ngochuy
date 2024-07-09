@@ -57,5 +57,12 @@
   
 <img width="1337" alt="Ảnh màn hình 2024-07-05 lúc 22 36 03" src="https://github.com/Training-Exercises-Dtsmart/1_ngochuy/assets/145101998/d3649ca2-3a20-467c-a3e8-8a7be157564e">
 
-  
-  
+
+--------------------------------------
+
+*** Day 6: 
+
+- Refactoring APIs, format json response, migrations for table :
+
+https://github.com/Training-Exercises-Dtsmart/1_ngochuy/commit/8bb9d713a015c2c68261eef2e3f379faf619063c
+
