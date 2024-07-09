@@ -1,4 +1,4 @@
-*** Day 2: 
+<img width="1345" alt="Ảnh màn hình 2024-07-09 lúc 16 19 29" src="https://github.com/Training-Exercises-Dtsmart/1_ngochuy/assets/145101998/f8d957e3-563c-4faf-85c8-3fcc1748fa8d">*** Day 2: 
 
 - Schema database :
   
@@ -62,6 +62,15 @@
 *** Day 6: 
 
 - Refactoring APIs, format json response, migrations for table :
+  
+<img width="354" alt="Ảnh màn hình 2024-07-09 lúc 17 12 13" src="https://github.com/Training-Exercises-Dtsmart/1_ngochuy/assets/145101998/2e1e02c4-8fb1-4aa2-958d-81aa3f9d9212">
 
-https://github.com/Training-Exercises-Dtsmart/1_ngochuy/commit/8bb9d713a015c2c68261eef2e3f379faf619063c
+
+- Htpp Method via PostMan including User,Product,Post:
+
+  <img width="1345" alt="Ảnh màn hình 2024-07-09 lúc 16 19 29" src="https://github.com/Training-Exercises-Dtsmart/1_ngochuy/assets/145101998/3674fb29-da47-45ce-8788-68d88d5840a3">
+
+
+  
+
 
