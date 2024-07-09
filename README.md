@@ -2,7 +2,8 @@
 
 - Schema database :
   
-<img width="938" alt="Ảnh màn hình 2024-07-09 lúc 09 59 20" src="https://github.com/Training-Exercises-Dtsmart/1_ngochuy/assets/145101998/05326c85-e1a6-43a1-b4d1-b0c92238ed59">
+<img width="857" alt="Ảnh màn hình 2024-07-09 lúc 10 04 11" src="https://github.com/Training-Exercises-Dtsmart/1_ngochuy/assets/145101998/1d5eea06-5f3d-4025-b260-264c4db6a363">
+
 
   
 - Migrations:
