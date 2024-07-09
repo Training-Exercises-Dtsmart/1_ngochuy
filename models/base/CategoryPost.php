@@ -17,6 +17,7 @@ use \app\models\CategoryPostQuery;
  * @property string $slug
  * @property string $description
  * @property integer $user_id
+ * @property string $deleted_at
  * @property string $created_at
  * @property string $updated_at
  *
@@ -42,6 +43,7 @@ abstract class CategoryPost extends \yii\db\ActiveRecord
         $behaviors = parent::behaviors();
         $behaviors['timestamp'] = [
             'class' => TimestampBehavior::class,
+            'value' => (new \DateTime())->format('Y-m-d H:i:s'),
                         ];
         
     return $behaviors;
@@ -56,6 +58,7 @@ abstract class CategoryPost extends \yii\db\ActiveRecord
         return ArrayHelper::merge($parentRules, [
             [['description'], 'string'],
             [['user_id'], 'integer'],
+            [['deleted_at'], 'safe'],
             [['name', 'slug'], 'string', 'max' => 255],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\User::class, 'targetAttribute' => ['user_id' => 'id']]
         ]);
@@ -74,6 +77,7 @@ abstract class CategoryPost extends \yii\db\ActiveRecord
             'user_id' => 'User ID',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
+            'deleted_at' => 'Deleted At',
         ]);
     }
 

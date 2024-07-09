@@ -18,8 +18,9 @@ class m240702_095621_create_category_post_table extends Migration
             'slug' => $this->string(),
             'description' => $this->text(),
             'user_id' => $this->integer(),
-            'created_at' => $this->timestamp(),
-            'updated_at' => $this->timestamp(),
+            'created_at' => $this->dateTime(),
+            'updated_at' => $this->dateTime(),
+            'deleted_at' => $this->dateTime()
         ]);
 
         // creates index for column `user_id`

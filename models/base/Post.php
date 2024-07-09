@@ -26,7 +26,7 @@ use \app\models\PostQuery;
  * @property string $created_at
  * @property string $updated_at
  *
- * @property \app\models\CategoryPost $category
+ * @property \app\models\CategoryPost $categoryPost
  * @property \app\models\User $user
  */
 abstract class Post extends \yii\db\ActiveRecord
@@ -48,6 +48,7 @@ abstract class Post extends \yii\db\ActiveRecord
         $behaviors = parent::behaviors();
         $behaviors['timestamp'] = [
             'class' => TimestampBehavior::class,
+            'value' => (new \DateTime())->format('Y-m-d H:i:s'),
                         ];
         
     return $behaviors;

@@ -13,7 +13,7 @@ class ProductForm extends Model
     public $category_product_id;
     public $slug;
     public $details;
-    public $quantity;
+    public $availabel_stock;
     public $is_best_sell;
     public $product_status;
     public $user_id;
@@ -21,10 +21,10 @@ class ProductForm extends Model
     public function rules()
     {
         return [
-            [['name', 'price', 'category_product_id', 'slug', 'quantity', 'user_id'], 'required'],
+            [['name', 'price', 'slug', 'availabel_stock',], 'required'],
             [['description', 'details'], 'string'],
             [['price'], 'number'],
-            [['category_product_id', 'quantity', 'user_id'], 'integer'],
+            [['category_product_id', 'availabel_stock', 'user_id'], 'integer'],
             [['is_best_sell', 'product_status'], 'boolean'],
             [['name', 'slug'], 'string', 'max' => 255],
         ];

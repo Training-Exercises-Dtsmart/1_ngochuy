@@ -16,14 +16,14 @@ class m240702_095213_create_orders_table extends Migration
             'id' => $this->primaryKey(),
             'quantity' => $this->integer(),
             'total_amount' => $this->float(),
-            'order_date' => $this->date(),
+            'order_date' => $this->dateTime(),
             'payment_method' => $this->string(),
             'shipping_address' => $this->string(),
-            'status' => $this->boolean(),
+            'status' => $this->smallInteger(),
             'customer_id' => $this->integer(),
-            'created_at' => $this->timestamp(),
-            'updated_at' => $this->timestamp(),
-            'deleted_at' => $this->timestamp(),
+            'created_at' => $this->dateTime(),
+            'updated_at' => $this->dateTime(),
+            'deleted_at' => $this->dateTime(),
         ]);
 
            // creates index for column `customer_id`

@@ -17,10 +17,10 @@ class m240702_095214_create_order_item_table extends Migration
             'order_id' => $this->integer(),
             'product_id' => $this->integer(),
             'quantity' => $this->integer(),
-            'price' => $this->float(),
-            'created_at' => $this->timestamp(),
-            'updated_at' => $this->timestamp(),
-            'deleted_at' => $this->timestamp(),
+            'price' => $this->double(),
+            'created_at' => $this->dateTime(),
+            'updated_at' => $this->dateTime(),
+            'deleted_at' => $this->dateTime(), 
         ]);
 
           // creates index for column `order_id`

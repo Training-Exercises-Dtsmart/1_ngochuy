@@ -1,7 +1,8 @@
 <?php
 
-namespace app\models;
+namespace app\models\query;
 
+use app\models\Product as ModelsProduct;
 use Product;
 
 /**
@@ -13,5 +14,8 @@ use Product;
  */
 class ProductQuery extends \yii\db\ActiveQuery
 {
+    public function active(){
 
+       return $this->andWhere(['product_status' => ModelsProduct::STATUS_ACTIVE]);
+    }
 }

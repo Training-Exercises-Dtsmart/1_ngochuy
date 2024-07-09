@@ -8,7 +8,6 @@ use Yii;
 use yii\helpers\ArrayHelper;
 use yii\behaviors\TimestampBehavior;
 use \app\models\ProductQuery;
-use yii\db\Expression;
 
 /**
  * This is the base-model class for table "products".
@@ -19,8 +18,8 @@ use yii\db\Expression;
  * @property double $price
  * @property integer $category_product_id
  * @property string $slug
- * @property string $details
- * @property integer $quantity
+ * @property string $detail
+ * @property integer $availabel_stock
  * @property integer $is_best_sell
  * @property integer $product_status
  * @property integer $user_id
@@ -50,8 +49,8 @@ abstract class Product extends \yii\db\ActiveRecord
         $behaviors = parent::behaviors();
         $behaviors['timestamp'] = [
             'class' => TimestampBehavior::class,
-            'value' => new Expression('NOW()'),
-            ];
+            'value' => (new \DateTime())->format('Y-m-d H:i:s'),
+                        ];
         
     return $behaviors;
     }
@@ -63,9 +62,9 @@ abstract class Product extends \yii\db\ActiveRecord
     {
         $parentRules = parent::rules();
         return ArrayHelper::merge($parentRules, [
-            [['description', 'details'], 'string'],
+            [['description', 'detail'], 'string'],
             [['price'], 'number'],
-            [['category_product_id', 'quantity', 'is_best_sell', 'product_status', 'user_id'], 'integer'],
+            [['category_product_id', 'availabel_stock', 'is_best_sell', 'product_status', 'user_id'], 'integer'],
             [['deleted_at'], 'safe'],
             [['name', 'slug'], 'string', 'max' => 255],
             [['category_product_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\CategoryProduct::class, 'targetAttribute' => ['category_product_id' => 'id']]
@@ -84,8 +83,8 @@ abstract class Product extends \yii\db\ActiveRecord
             'price' => 'Price',
             'category_product_id' => 'Category Product ID',
             'slug' => 'Slug',
-            'details' => 'Details',
-            'quantity' => 'Quantity',
+            'detail' => 'Detail',
+            'availabel_stock' => 'Availabel Stock',
             'is_best_sell' => 'Is Best Sell',
             'product_status' => 'Product Status',
             'user_id' => 'User ID',

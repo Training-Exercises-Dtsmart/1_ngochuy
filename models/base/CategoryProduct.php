@@ -16,6 +16,7 @@ use \app\models\CategoryProductQuery;
  * @property string $name
  * @property string $slug
  * @property string $description
+ * @property string $deleted_at
  * @property string $created_at
  * @property string $updated_at
  *
@@ -40,6 +41,7 @@ abstract class CategoryProduct extends \yii\db\ActiveRecord
         $behaviors = parent::behaviors();
         $behaviors['timestamp'] = [
             'class' => TimestampBehavior::class,
+            'value' => (new \DateTime())->format('Y-m-d H:i:s'),
                         ];
         
     return $behaviors;
@@ -53,6 +55,7 @@ abstract class CategoryProduct extends \yii\db\ActiveRecord
         $parentRules = parent::rules();
         return ArrayHelper::merge($parentRules, [
             [['description'], 'string'],
+            [['deleted_at'], 'safe'],
             [['name', 'slug'], 'string', 'max' => 255]
         ]);
     }
@@ -69,6 +72,7 @@ abstract class CategoryProduct extends \yii\db\ActiveRecord
             'description' => 'Description',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
+            'deleted_at' => 'Deleted At',
         ]);
     }
 

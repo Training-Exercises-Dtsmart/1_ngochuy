@@ -17,8 +17,9 @@ class m240702_094311_create_category_product_table extends Migration
             'name' => $this->string(),
             'slug' => $this->string(),
             'description' => $this->text(),
-            'created_at' => $this->timestamp(),
-            'updated_at' => $this->timestamp(),
+            'created_at' => $this->dateTime(),
+            'updated_at' => $this->dateTime(),
+            'deleted_at' => $this->dateTime()
         ]);
     }
 

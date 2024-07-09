@@ -18,14 +18,14 @@ class m240702_095627_create_posts_table extends Migration
             'user_id' => $this->integer(),
             'category_id' => $this->integer(),
             'content' => $this->text(),
-            'status' => $this->boolean(),
-            'image' => $this->string(),
-            'thumbnail' => $this->string(),
+            'status' => $this->smallInteger(),
+            'image' => $this->string(255),
+            'thumbnail' => $this->string(255),
             'short_description' => $this->string(),
             'slug' => $this->string(),
-            'created_at' => $this->timestamp(),
-            'updated_at' => $this->timestamp(),
-            'deleted_at' => $this->timestamp(),
+            'created_at' => $this->dateTime(),
+            'updated_at' => $this->dateTime(),
+            'deleted_at' => $this->dateTime(),
         ]);
 
         // creates index for column `user_id`

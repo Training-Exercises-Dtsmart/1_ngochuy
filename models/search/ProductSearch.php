@@ -1,6 +1,6 @@
 <?php
 
-namespace app\models;
+namespace app\models\search;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
@@ -17,8 +17,8 @@ class ProductSearch extends Product
     public function rules()
     {
         return [
-            [['id', 'category_product_id', 'quantity', 'is_best_sell', 'product_status', 'user_id'], 'integer'],
-            [['name', 'description', 'slug', 'details', 'created_at', 'updated_at', 'deleted_at'], 'safe'],
+            [['id', 'category_product_id', 'availbale_stock', 'is_best_sell', 'product_status', 'user_id'], 'integer'],
+            [['name', 'description', 'slug', 'detail', 'created_at', 'updated_at', 'deleted_at'], 'safe'],
             [['price'], 'number'],
         ];
     }
@@ -65,7 +65,7 @@ class ProductSearch extends Product
             'id' => $this->id,
             'price' => $this->price,
             'category_product_id' => $this->category_product_id,
-            'quantity' => $this->quantity,
+            'availabel_stock' => $this->availabel_stock,
             'is_best_sell' => $this->is_best_sell,
             'product_status' => $this->product_status,
             'user_id' => $this->user_id,
