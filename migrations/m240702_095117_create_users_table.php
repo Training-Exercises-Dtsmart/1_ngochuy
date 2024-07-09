@@ -18,6 +18,7 @@ class m240702_095117_create_users_table extends Migration
             'address' => $this->string(),
             'email' => $this->string(),
             'phone' => $this->string(),
+            'password' => $this->string(),
             'age' => $this->integer(),
             'created_at' => $this->dateTime(),
             'updated_at' => $this->dateTime(),

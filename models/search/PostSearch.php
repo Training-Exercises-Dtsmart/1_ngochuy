@@ -1,15 +1,15 @@
 <?php
 
-namespace app\models\search;
+namespace app\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Product;
+use app\models\Post;
 
 /**
- * ProductSearch represents the model behind the search form of `app\models\Product`.
+ * PostSearch represents the model behind the search form of `app\models\Post`.
  */
-class ProductSearch extends Product
+class PostSearch extends Post
 {
     /**
      * {@inheritdoc}
@@ -17,9 +17,8 @@ class ProductSearch extends Product
     public function rules()
     {
         return [
-            [['id', 'category_product_id', 'availbale_stock', 'is_best_sell', 'product_status', 'user_id'], 'integer'],
-            [['name', 'description', 'slug', 'detail', 'created_at', 'updated_at', 'deleted_at'], 'safe'],
-            [['price'], 'number'],
+            [['id', 'user_id', 'category_id', 'status'], 'integer'],
+            [['title', 'content', 'image', 'thumbnail', 'short_description', 'slug', 'created_at', 'updated_at', 'deleted_at'], 'safe'],
         ];
     }
 
@@ -41,7 +40,7 @@ class ProductSearch extends Product
      */
     public function search($params)
     {
-        $query = Product::find();
+        $query = Post::find();
 
         // add conditions that should always apply here
 
@@ -52,8 +51,9 @@ class ProductSearch extends Product
             ],
             'sort' => [
                 'defaultOrder' => [
-                    'id' => SORT_DESC]
-            ]  
+                    'id' => SORT_DESC
+                ]
+            ]    
         ]);
 
         $this->load($params);
@@ -67,21 +67,20 @@ class ProductSearch extends Product
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'price' => $this->price,
-            'category_product_id' => $this->category_product_id,
-            'availabel_stock' => $this->availabel_stock,
-            'is_best_sell' => $this->is_best_sell,
-            'product_status' => $this->product_status,
             'user_id' => $this->user_id,
+            'category_id' => $this->category_id,
+            'status' => $this->status,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'deleted_at' => $this->deleted_at,
         ]);
 
-        $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'description', $this->description])
-            ->andFilterWhere(['like', 'slug', $this->slug])
-            ->andFilterWhere(['like', 'detail', $this->detail]);
+        $query->andFilterWhere(['like', 'title', $this->title])
+            ->andFilterWhere(['like', 'content', $this->content])
+            ->andFilterWhere(['like', 'image', $this->image])
+            ->andFilterWhere(['like', 'thumbnail', $this->thumbnail])
+            ->andFilterWhere(['like', 'short_description', $this->short_description])
+            ->andFilterWhere(['like', 'slug', $this->slug]);
 
         return $dataProvider;
     }

@@ -26,7 +26,7 @@ use \app\models\PostQuery;
  * @property string $created_at
  * @property string $updated_at
  *
- * @property \app\models\CategoryPost $categoryPost
+ * @property \app\models\CategoryPost $category
  * @property \app\models\User $user
  */
 abstract class Post extends \yii\db\ActiveRecord

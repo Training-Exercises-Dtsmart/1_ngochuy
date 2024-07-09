@@ -2,18 +2,17 @@
 
 namespace app\modules\models\form;
 
-use app\models\Product;
+use app\models\User;
 
 
-class ProductForm extends Product
+class UserForm extends User
 {
     public function rules()
     {
         return array_merge(
             parent::rules(),
             [
-                [['name', 'price', 'slug', 'availabel_stock',], 'required'],
-
+                [['name', 'password',], 'required'],
             ]
         );
     }

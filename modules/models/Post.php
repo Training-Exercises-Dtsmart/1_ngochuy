@@ -1,19 +1,21 @@
 <?php
 
 namespace app\modules\models;
+
 use app\models\Post as BasePost;
 
-class Post extends BasePost{
+class Post extends BasePost
+{
 
     public function fields()
     {
         return array_merge(parent::fields(), [
-            "category_name" => "categoryName",
+            "category_product_name" => "categoryProduct",
         ]);
     }
 
-    public function getCategoryName()
+    public function getCategoryProduct()
     {
-        return $this->categoryPost ? $this->categoryPost->name : '';
+        return $this->category ? $this->category->name : '';
     }
 }

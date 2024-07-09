@@ -17,6 +17,7 @@ use \app\models\UserQuery;
  * @property string $address
  * @property string $email
  * @property string $phone
+ * @property string $password
  * @property integer $age
  * @property string $deleted_at
  * @property string $created_at
@@ -60,7 +61,7 @@ abstract class User extends \yii\db\ActiveRecord
         return ArrayHelper::merge($parentRules, [
             [['age'], 'integer'],
             [['deleted_at'], 'safe'],
-            [['name', 'address', 'email', 'phone'], 'string', 'max' => 255]
+            [['name', 'address', 'email', 'phone', 'password'], 'string', 'max' => 255]
         ]);
     }
 
@@ -75,6 +76,7 @@ abstract class User extends \yii\db\ActiveRecord
             'address' => 'Address',
             'email' => 'Email',
             'phone' => 'Phone',
+            'password' => 'Password',
             'age' => 'Age',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',

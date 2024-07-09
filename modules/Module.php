@@ -17,9 +17,7 @@ class Module extends \yii\base\Module
      */
     public function init()
     {
-        $this->defaultRoute = 'product';
         parent::init();
 
-        // custom initialization code goes here
     }
 }

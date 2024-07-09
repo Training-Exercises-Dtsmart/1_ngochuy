@@ -2,19 +2,31 @@
 
 namespace app\modules\controllers;
 
-use app\controllers\Controller;
+use Yii;
 use app\models\search\ProductSearch;
 use app\modules\models\Product;
 use app\models\form\ProductForm;
 use app\modules\models\HttpStatus;
-use Yii;
+use app\controllers\Controller;
+use app\modules\models\pagination\Pagination;
 
 class ProductController extends Controller
 {
+    public $modelClass = 'app\modules\models\Product';
+    public $serializer = [
+        'class' => 'yii\rest\Serializer',
+        'collectionEnvelope' => 'items',
+    ];
     public function actionIndex()
     {
-        $products = Product::find()->all();
-        return $this->json(true, ["products" => $products]);
+        $products = Product::find();
+        if (!$products) {
+            return $this->json(false, [], 'Product not found', HttpStatus::NOT_FOUND);
+        }
+
+        $dataProvider = Pagination::getPagination($products, 10, SORT_DESC);
+        
+        return $this->json(true, ["products" => $dataProvider], "Success", HttpStatus::OK);
     }
 
     public function actionView($id)
@@ -41,9 +53,11 @@ class ProductController extends Controller
     {
         $productForm = new ProductForm();
         $productForm->load(Yii::$app->request->post(), '');
+
         if (!$productForm->validate() || !$productForm->save()) {
             return $this->json(false, ["errors" => $productForm->getErrors()], "Can't create new product", HttpStatus::BAD_REQUEST);
         }
+
         return $this->json(true, ["product" => $productForm], "Create product successfully", HttpStatus::OK);
     }
 
@@ -51,6 +65,7 @@ class ProductController extends Controller
     {
         $product = Product::findOne($id);
         $product->load(Yii::$app->request->post(), '');
+
         if (!$product->validate() || !$product->save()) {
             return $this->json(false, ['errors' => $product->getErrors()], "Can't update product", HttpStatus::BAD_REQUEST);
         }
@@ -62,7 +77,7 @@ class ProductController extends Controller
     {
         $product = Product::find()->where(["id" => $id])->one();
 
-        if (!$product) {
+        if (empty($product)) {
             return $this->json(false, [], "Product not found", HttpStatus::NOT_FOUND);
         }
 

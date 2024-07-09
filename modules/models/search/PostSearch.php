@@ -1,20 +1,24 @@
 <?php
 
 namespace app\modules\models\search;
+
 use app\modules\models\Post;
 use yii\data\ActiveDataProvider;
 
-class PostSearch extends Post{
+class PostSearch extends Post
+{
     public $keyword;
     public $name;
-    public function rules(){
+    public function rules()
+    {
         return [
             [['id', 'category_post_id', 'user_id'], 'integer'],
             [['title', 'content', 'keyword'], 'safe']
         ];
     }
 
-    public function search($params){
+    public function search($params)
+    {
         $query = Post::find()->joinWith('category');
 
         $dataProvider = new ActiveDataProvider([
@@ -25,7 +29,7 @@ class PostSearch extends Post{
         ]);
 
         $this->load($params);
-        if(!$this->validate()){
+        if (!$this->validate()) {
             return $dataProvider;
         }
 
@@ -34,10 +38,13 @@ class PostSearch extends Post{
         ]);
 
 
-        $query->andFilterWhere(["or", ["LIKE", "title", $this->keyword], 
-            ["LIKE", "name", $this->name]]);
+        $query->andFilterWhere([
+            "or",
+            ["LIKE", "title", $this->keyword],
+            ["LIKE", "name", $this->name]
+        ]);
 
         return $dataProvider;
 
-    }   
+    }
 }
