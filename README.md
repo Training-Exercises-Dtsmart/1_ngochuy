@@ -2,10 +2,9 @@
 
 - Schema database :
   
-<img width="857" alt="Ảnh màn hình 2024-07-09 lúc 10 04 11" src="https://github.com/Training-Exercises-Dtsmart/1_ngochuy/assets/145101998/1d5eea06-5f3d-4025-b260-264c4db6a363">
+![E-commerce schema_2024-07-09T07_35_44 355Z](https://github.com/Training-Exercises-Dtsmart/1_ngochuy/assets/145101998/f16ea3c9-c391-44fe-8038-f5880b8c4c2a)
 
 
-  
 - Migrations:
 
   
