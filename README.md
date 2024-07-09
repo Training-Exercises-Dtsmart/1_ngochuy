@@ -1,10 +1,10 @@
 *** Day 2: 
 
 - Schema database :
+  
+<img width="938" alt="Ảnh màn hình 2024-07-09 lúc 09 59 20" src="https://github.com/Training-Exercises-Dtsmart/1_ngochuy/assets/145101998/05326c85-e1a6-43a1-b4d1-b0c92238ed59">
 
-  <img width="1008" alt="Ảnh màn hình 2024-07-02 lúc 16 29 42" src="https://github.com/Training-Exercises-Dtsmart/2_phamngochuy/assets/145101998/db072adc-adc4-4175-844e-15dfe59e1df6">
-
-
+  
 - Migrations:
 
   
