@@ -2,6 +2,7 @@
 
 namespace app\modules\controllers;
 
+use app\modules\models\form\SignInForm;
 use app\modules\models\form\SignupForm;
 use Yii;
 use app\modules\models\form\UserForm;
@@ -33,29 +34,23 @@ class UserController extends Controller
         return $this->json(true, ['data' => $user], 'success', HttpStatus::OK);
     }
 
-    // public function actionLogin()
-    // {
-    //      $model = new LoginForm();
-    //      if ($model->load(\Yii::$app->request->post(), '') && $model->login()) {
-    //           return $model->getUser()->toArray(['id', 'access_token', 'username']);
-    //      }
+    public function actionLogin()
+    {
+        $model = new SignInForm();
+        if ($model->load(Yii::$app->request->post(), '') && $model->login()) {
+            return $this->json(true, ['data' => $model->getUser()->toArray(['id', 'name'])], 'Login successful', HttpStatus::OK);
+        }
 
-    //      \Yii::$app->response->statusCode = 422;
-    //      return [
-    //           'errors' => $model->errors
-    //      ];
-    // }
+        return $this->json(false, $model->errors, 'Login failed', HttpStatus::UNAUTHORIZED);
+    }
 
     public function actionSignUp()
     {
-         $model = new SignupForm(); 
-         if ($model->load(Yii::$app->request->post(), '') && $model->register()) {
-              return $model->_user;
-         }
+        $model = new SignupForm();
+        if ($model->load(Yii::$app->request->post(), '') && $model->register()) {
+            return $this->json(true, ['data' => $model->_user], 'Created account successful', HttpStatus::OK);
+        }
 
-         Yii::$app->response->statusCode = 422;
-         return [
-              'errors' => $model->errors
-         ];
+        return $this->json(false, $model->errors, 'Login failed', HttpStatus::CONFLICT);
     }
 }

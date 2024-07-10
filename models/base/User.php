@@ -32,7 +32,7 @@ use \app\models\UserQuery;
  * @property \app\models\Product[] $products0
  * @property \app\models\UserAddress[] $userAddresses
  */
-abstract class User extends \yii\db\ActiveRecord
+abstract class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
 {
 
     /**
@@ -160,5 +160,56 @@ abstract class User extends \yii\db\ActiveRecord
     public static function find()
     {
         return new UserQuery(static::class);
+    }
+
+    public static function findIdentity($id)
+    {
+       return self::findOne($id);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function findIdentityByAccessToken($token, $type = null)
+    {
+         return self::find()->andWhere(['access_token' => $token])->one();
+    }
+
+    public static function findByName($name)
+    {
+         return self::find()->andWhere(['name' => $name])->one();
+    }
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getAuthKey()
+    {
+        return $this->id;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function validateAuthKey($authKey)
+    {
+        return false;
+    }
+
+
+     /**
+     * Validates password
+     *
+     * @param string $password password to validate
+     * @return bool if password provided is valid for current user
+     */
+    public function validatePassword($password)
+    {
+        return Yii::$app->security->validatePassword($password, $this->password);
     }
 }
