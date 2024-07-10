@@ -21,6 +21,7 @@ class m240702_095214_create_order_item_table extends Migration
             'created_at' => $this->dateTime(),
             'updated_at' => $this->dateTime(),
             'deleted_at' => $this->dateTime(), 
+            'created_by' => $this->integer(),
         ]);
 
           // creates index for column `order_id`
@@ -53,6 +54,23 @@ class m240702_095214_create_order_item_table extends Migration
             '{{%order_item}}',
             'product_id',
             '{{%products}}',
+            'id',
+            'CASCADE'
+        );
+
+        // creates index for column `created_by`
+        $this->createIndex(
+            '{{%idx-order_item-created_by}}',
+            '{{%order_item}}',
+            'created_by'
+        );
+
+        // add foreign key for table `{{%users}}`
+        $this->addForeignKey(
+            '{{%fk-order_item-created_by}}',
+            '{{%order_item}}',
+            'created_by',
+            '{{%users}}',
             'id',
             'CASCADE'
         );

@@ -26,6 +26,7 @@ class m240702_095627_create_posts_table extends Migration
             'created_at' => $this->dateTime(),
             'updated_at' => $this->dateTime(),
             'deleted_at' => $this->dateTime(),
+            "created_by" => $this->integer(),
         ]);
 
         // creates index for column `user_id`
@@ -58,6 +59,23 @@ class m240702_095627_create_posts_table extends Migration
             '{{%posts}}',
             'category_id',
             '{{%category_post}}',
+            'id',
+            'CASCADE'
+        );
+
+        // add index for column `created_by`
+        $this->createIndex(
+            '{{%idx-posts-created_by}}',
+            '{{%posts}}',
+            'created_by'
+        );
+
+        // add foreign key for table `{{%users}}`
+        $this->addForeignKey(
+            '{{%fk-posts-created_by}}',
+            '{{%posts}}',
+            'created_by',
+            '{{%users}}',
             'id',
             'CASCADE'
         );

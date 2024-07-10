@@ -6,6 +6,7 @@ namespace app\models\base;
 
 use Yii;
 use yii\helpers\ArrayHelper;
+use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
 use \app\models\OrderItemQuery;
 
@@ -20,7 +21,9 @@ use \app\models\OrderItemQuery;
  * @property string $deleted_at
  * @property string $created_at
  * @property string $updated_at
+ * @property integer $created_by
  *
+ * @property \app\models\User $createdBy
  * @property \app\models\Order $order
  * @property \app\models\Product $product
  */
@@ -41,6 +44,10 @@ abstract class OrderItem extends \yii\db\ActiveRecord
     public function behaviors()
     {
         $behaviors = parent::behaviors();
+        $behaviors['blameable'] = [
+            'class' => BlameableBehavior::class,
+            'updatedByAttribute' => false,
+    ];
         $behaviors['timestamp'] = [
             'class' => TimestampBehavior::class,
             'value' => (new \DateTime())->format('Y-m-d H:i:s'),
@@ -59,6 +66,7 @@ abstract class OrderItem extends \yii\db\ActiveRecord
             [['order_id', 'product_id', 'quantity'], 'integer'],
             [['price'], 'number'],
             [['deleted_at'], 'safe'],
+            [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\User::class, 'targetAttribute' => ['created_by' => 'id']],
             [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Order::class, 'targetAttribute' => ['order_id' => 'id']],
             [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Product::class, 'targetAttribute' => ['product_id' => 'id']]
         ]);
@@ -78,7 +86,16 @@ abstract class OrderItem extends \yii\db\ActiveRecord
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
             'deleted_at' => 'Deleted At',
+            'created_by' => 'Created By',
         ]);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCreatedBy()
+    {
+        return $this->hasOne(\app\models\User::class, ['id' => 'created_by']);
     }
 
     /**

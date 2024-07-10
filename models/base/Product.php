@@ -6,6 +6,7 @@ namespace app\models\base;
 
 use Yii;
 use yii\helpers\ArrayHelper;
+use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
 use \app\models\ProductQuery;
 
@@ -21,14 +22,17 @@ use \app\models\ProductQuery;
  * @property string $detail
  * @property integer $availabel_stock
  * @property integer $is_best_sell
- * @property integer $product_status
- * @property integer $user_id
+ * @property integer $status
  * @property string $deleted_at
+ * @property integer $created_by
+ * @property integer $updated_by
  * @property string $created_at
  * @property string $updated_at
  *
  * @property \app\models\CategoryProduct $categoryProduct
+ * @property \app\models\User $createdBy
  * @property \app\models\OrderItem[] $orderItems
+ * @property \app\models\User $updatedBy
  */
 abstract class Product extends \yii\db\ActiveRecord
 {
@@ -47,6 +51,9 @@ abstract class Product extends \yii\db\ActiveRecord
     public function behaviors()
     {
         $behaviors = parent::behaviors();
+        $behaviors['blameable'] = [
+            'class' => BlameableBehavior::class,
+        ];
         $behaviors['timestamp'] = [
             'class' => TimestampBehavior::class,
             'value' => (new \DateTime())->format('Y-m-d H:i:s'),
@@ -64,10 +71,12 @@ abstract class Product extends \yii\db\ActiveRecord
         return ArrayHelper::merge($parentRules, [
             [['description', 'detail'], 'string'],
             [['price'], 'number'],
-            [['category_product_id', 'availabel_stock', 'is_best_sell', 'product_status', 'user_id'], 'integer'],
+            [['category_product_id', 'availabel_stock', 'is_best_sell', 'status'], 'integer'],
             [['deleted_at'], 'safe'],
             [['name', 'slug'], 'string', 'max' => 255],
-            [['category_product_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\CategoryProduct::class, 'targetAttribute' => ['category_product_id' => 'id']]
+            [['category_product_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\CategoryProduct::class, 'targetAttribute' => ['category_product_id' => 'id']],
+            [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\User::class, 'targetAttribute' => ['created_by' => 'id']],
+            [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\User::class, 'targetAttribute' => ['updated_by' => 'id']]
         ]);
     }
 
@@ -86,8 +95,9 @@ abstract class Product extends \yii\db\ActiveRecord
             'detail' => 'Detail',
             'availabel_stock' => 'Availabel Stock',
             'is_best_sell' => 'Is Best Sell',
-            'product_status' => 'Product Status',
-            'user_id' => 'User ID',
+            'status' => 'Status',
+            'created_by' => 'Created By',
+            'updated_by' => 'Updated By',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
             'deleted_at' => 'Deleted At',
@@ -105,9 +115,25 @@ abstract class Product extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getCreatedBy()
+    {
+        return $this->hasOne(\app\models\User::class, ['id' => 'created_by']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getOrderItems()
     {
         return $this->hasMany(\app\models\OrderItem::class, ['product_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUpdatedBy()
+    {
+        return $this->hasOne(\app\models\User::class, ['id' => 'updated_by']);
     }
 
     /**

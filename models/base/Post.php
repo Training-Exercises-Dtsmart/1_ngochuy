@@ -6,6 +6,7 @@ namespace app\models\base;
 
 use Yii;
 use yii\helpers\ArrayHelper;
+use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
 use \app\models\PostQuery;
 
@@ -25,8 +26,10 @@ use \app\models\PostQuery;
  * @property string $deleted_at
  * @property string $created_at
  * @property string $updated_at
+ * @property integer $created_by
  *
  * @property \app\models\CategoryPost $category
+ * @property \app\models\User $createdBy
  * @property \app\models\User $user
  */
 abstract class Post extends \yii\db\ActiveRecord
@@ -46,6 +49,10 @@ abstract class Post extends \yii\db\ActiveRecord
     public function behaviors()
     {
         $behaviors = parent::behaviors();
+        $behaviors['blameable'] = [
+            'class' => BlameableBehavior::class,
+            'updatedByAttribute' => false,
+    ];
         $behaviors['timestamp'] = [
             'class' => TimestampBehavior::class,
             'value' => (new \DateTime())->format('Y-m-d H:i:s'),
@@ -66,6 +73,7 @@ abstract class Post extends \yii\db\ActiveRecord
             [['deleted_at'], 'safe'],
             [['title', 'image', 'thumbnail', 'short_description', 'slug'], 'string', 'max' => 255],
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\CategoryPost::class, 'targetAttribute' => ['category_id' => 'id']],
+            [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\User::class, 'targetAttribute' => ['created_by' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\User::class, 'targetAttribute' => ['user_id' => 'id']]
         ]);
     }
@@ -89,6 +97,7 @@ abstract class Post extends \yii\db\ActiveRecord
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
             'deleted_at' => 'Deleted At',
+            'created_by' => 'Created By',
         ]);
     }
 
@@ -98,6 +107,14 @@ abstract class Post extends \yii\db\ActiveRecord
     public function getCategory()
     {
         return $this->hasOne(\app\models\CategoryPost::class, ['id' => 'category_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCreatedBy()
+    {
+        return $this->hasOne(\app\models\User::class, ['id' => 'created_by']);
     }
 
     /**

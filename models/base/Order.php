@@ -25,6 +25,7 @@ use \app\models\OrderQuery;
  * @property string $updated_at
  *
  * @property \app\models\User $customer
+ * @property \app\models\OrderAddress[] $orderAddresses
  * @property \app\models\OrderItem[] $orderItems
  */
 abstract class Order extends \yii\db\ActiveRecord
@@ -93,6 +94,14 @@ abstract class Order extends \yii\db\ActiveRecord
     public function getCustomer()
     {
         return $this->hasOne(\app\models\User::class, ['id' => 'customer_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOrderAddresses()
+    {
+        return $this->hasMany(\app\models\OrderAddress::class, ['order_id' => 'id']);
     }
 
     /**

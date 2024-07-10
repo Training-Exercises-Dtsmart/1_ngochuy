@@ -24,8 +24,13 @@ use \app\models\UserQuery;
  * @property string $updated_at
  *
  * @property \app\models\CategoryPost[] $categoryPosts
+ * @property \app\models\OrderItem[] $orderItems
  * @property \app\models\Order[] $orders
  * @property \app\models\Post[] $posts
+ * @property \app\models\Post[] $posts0
+ * @property \app\models\Product[] $products
+ * @property \app\models\Product[] $products0
+ * @property \app\models\UserAddress[] $userAddresses
  */
 abstract class User extends \yii\db\ActiveRecord
 {
@@ -95,6 +100,14 @@ abstract class User extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getOrderItems()
+    {
+        return $this->hasMany(\app\models\OrderItem::class, ['created_by' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getOrders()
     {
         return $this->hasMany(\app\models\Order::class, ['customer_id' => 'id']);
@@ -105,7 +118,39 @@ abstract class User extends \yii\db\ActiveRecord
      */
     public function getPosts()
     {
+        return $this->hasMany(\app\models\Post::class, ['created_by' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPosts0()
+    {
         return $this->hasMany(\app\models\Post::class, ['user_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProducts()
+    {
+        return $this->hasMany(\app\models\Product::class, ['created_by' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProducts0()
+    {
+        return $this->hasMany(\app\models\Product::class, ['updated_by' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserAddresses()
+    {
+        return $this->hasMany(\app\models\UserAddress::class, ['user_id' => 'id']);
     }
 
     /**
