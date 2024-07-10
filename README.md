@@ -2,7 +2,7 @@
 
 - Schema database :
   
-![E-commerce schema_2024-07-09T07_35_44 355Z](https://github.com/Training-Exercises-Dtsmart/1_ngochuy/assets/145101998/f16ea3c9-c391-44fe-8038-f5880b8c4c2a)
+![E-commerce schema_2024-07-10T03_52_33 165Z](https://github.com/Training-Exercises-Dtsmart/1_ngochuy/assets/145101998/ae32f1d1-4c5c-4db5-acee-5b719430983e)
 
 
 - Migrations:
