@@ -9,10 +9,12 @@ use app\models\form\ProductForm;
 use app\modules\models\HttpStatus;
 use app\controllers\Controller;
 use app\modules\models\pagination\Pagination;
+use yii\filters\auth\HttpBearerAuth;
 
 class ProductController extends Controller
 {
     public $modelClass = 'app\modules\models\Product';
+
     public $serializer = [
         'class' => 'yii\rest\Serializer',
         'collectionEnvelope' => 'items',

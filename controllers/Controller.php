@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use Yii;
+use yii\filters\auth\HttpBearerAuth;
 use yii\rest\Controller as BaseController;
 
 class Controller extends BaseController
@@ -16,5 +17,20 @@ class Controller extends BaseController
             "message" => $message,
             "code" => $code
         ];
+    }
+
+    public function behaviors()
+    {
+         $behaviors = parent::behaviors();
+         $behaviors['authenticator']['authMethods'] = [
+              HttpBearerAuth::class,
+         ];
+
+         $behaviors['authenticator']['except'] = ['options', 'login', 'sign-up'];
+       //   $behaviors['cors'] = [
+       //        'class' => Cors::class
+       //   ];
+
+         return $behaviors;
     }
 }

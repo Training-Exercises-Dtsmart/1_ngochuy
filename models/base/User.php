@@ -18,6 +18,7 @@ use \app\models\UserQuery;
  * @property string $email
  * @property string $phone
  * @property string $password
+ * @property string $access_token
  * @property integer $age
  * @property string $deleted_at
  * @property string $created_at
@@ -64,9 +65,10 @@ abstract class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInt
     {
         $parentRules = parent::rules();
         return ArrayHelper::merge($parentRules, [
+            [['access_token'], 'required'],
             [['age'], 'integer'],
             [['deleted_at'], 'safe'],
-            [['name', 'address', 'email', 'phone', 'password'], 'string', 'max' => 255]
+            [['name', 'address', 'email', 'phone', 'password', 'access_token'], 'string', 'max' => 255]
         ]);
     }
 
@@ -82,6 +84,7 @@ abstract class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInt
             'email' => 'Email',
             'phone' => 'Phone',
             'password' => 'Password',
+            'access_token' => 'Access Token',
             'age' => 'Age',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',

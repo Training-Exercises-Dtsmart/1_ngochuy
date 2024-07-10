@@ -38,7 +38,7 @@ class UserController extends Controller
     {
         $model = new SignInForm();
         if ($model->load(Yii::$app->request->post(), '') && $model->login()) {
-            return $this->json(true, ['data' => $model->getUser()->toArray(['id', 'name'])], 'Login successful', HttpStatus::OK);
+            return $this->json(true, ['data' => $model->getUser()->toArray(['id', 'name', 'access_token'])], 'Login successful', HttpStatus::OK);
         }
 
         return $this->json(false, $model->errors, 'Login failed', HttpStatus::UNAUTHORIZED);
@@ -51,6 +51,6 @@ class UserController extends Controller
             return $this->json(true, ['data' => $model->_user], 'Created account successful', HttpStatus::OK);
         }
 
-        return $this->json(false, $model->errors, 'Login failed', HttpStatus::CONFLICT);
+        return $this->json(false, $model->errors, 'Created account failed', HttpStatus::CONFLICT);
     }
 }
