@@ -12,7 +12,7 @@ use app\modules\models\resource\UserResource;
  * @property-read User|null $user
  *
  */
-class SignInForm extends \app\models\LoginForm
+class SignInForm extends \app\models\form\LoginForm
 {
     public $_user = false;
     /**

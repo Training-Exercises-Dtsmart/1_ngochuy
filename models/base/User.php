@@ -215,4 +215,10 @@ abstract class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInt
     {
         return Yii::$app->security->validatePassword($password, $this->password);
     }
+
+    public function refreshAccessToken()
+    {
+        $this->generateAccessToken();
+        return $this->save(false);
+    }
 }

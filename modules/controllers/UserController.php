@@ -51,6 +51,21 @@ class UserController extends Controller
             return $this->json(true, ['data' => $model->_user], 'Created account successful', HttpStatus::OK);
         }
 
-        return $this->json(false, $model->errors, 'Created account failed', HttpStatus::CONFLICT);
+        return $this->json(false, $model->getErrors(), 'Created account failed', HttpStatus::CONFLICT);
+    }
+
+    public function actionLogout()
+    {
+        $user = Yii::$app->user->identity;
+
+        if ($user) {
+            $user->access_token = '';
+            if ($user->save(false)) {
+                Yii::$app->user->logout();
+                return $this->json(true, [], 'Logout successful', HttpStatus::OK);
+            }
+        }
+
+        return $this->json(false, [], 'Logout failed', HttpStatus::UNAUTHORIZED);
     }
 }

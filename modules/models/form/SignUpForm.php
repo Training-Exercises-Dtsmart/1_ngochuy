@@ -12,7 +12,7 @@ use Yii;
  * @property-read User|null $user
  *
  */
-class SignupForm extends \app\models\LoginForm
+class SignupForm extends \app\models\form\LoginForm
 {
      public $name;
      public $password;
