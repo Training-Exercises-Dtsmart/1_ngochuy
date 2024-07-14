@@ -19,6 +19,7 @@ use \app\models\UserQuery;
  * @property string $phone
  * @property string $password
  * @property string $access_token
+ * @property string $verification_token
  * @property integer $age
  * @property string $deleted_at
  * @property string $created_at
@@ -68,7 +69,7 @@ abstract class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInt
             [['access_token'], 'required'],
             [['age'], 'integer'],
             [['deleted_at'], 'safe'],
-            [['name', 'address', 'email', 'phone', 'password', 'access_token'], 'string', 'max' => 255]
+            [['name', 'address', 'email', 'phone', 'password', 'access_token', 'verification_token'], 'string', 'max' => 255]
         ]);
     }
 
@@ -85,6 +86,7 @@ abstract class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInt
             'phone' => 'Phone',
             'password' => 'Password',
             'access_token' => 'Access Token',
+            'verification_token' => 'Verification Token',
             'age' => 'Age',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
@@ -165,60 +167,59 @@ abstract class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInt
         return new UserQuery(static::class);
     }
 
-    public static function findIdentity($id)
-    {
-       return self::findOne($id);
-    }
+     public static function findIdentity($id)
+     {
+          return self::findOne($id);
+     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function findIdentityByAccessToken($token, $type = null)
-    {
-         return self::find()->andWhere(['access_token' => $token])->one();
-    }
+     /**
+      * {@inheritdoc}
+      */
+     public static function findIdentityByAccessToken($token, $type = null)
+     {
+          return self::find()->andWhere(['access_token' => $token])->one();
+     }
 
-    public static function findByName($name)
-    {
-         return self::find()->andWhere(['name' => $name])->one();
-    }
+     public static function findByName($name)
+     {
+          return self::find()->andWhere(['name' => $name])->one();
+     }
 
-    public function getId()
-    {
-        return $this->id;
-    }
+     public function getId()
+     {
+          return $this->id;
+     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getAuthKey()
-    {
-        return $this->id;
-    }
+     /**
+      * {@inheritdoc}
+      */
+     public function getAuthKey()
+     {
+          return $this->id;
+     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function validateAuthKey($authKey)
-    {
-        return false;
-    }
+     /**
+      * {@inheritdoc}
+      */
+     public function validateAuthKey($authKey)
+     {
+          return false;
+     }
 
 
      /**
-     * Validates password
-     *
-     * @param string $password password to validate
-     * @return bool if password provided is valid for current user
-     */
-    public function validatePassword($password)
-    {
-        return Yii::$app->security->validatePassword($password, $this->password);
-    }
+      * Validates password
+      *
+      * @param string $password password to validate
+      * @return bool if password provided is valid for current user
+      */
+     public function validatePassword($password)
+     {
+          return Yii::$app->security->validatePassword($password, $this->password);
+     }
 
-    public function refreshAccessToken()
-    {
-        $this->generateAccessToken();
-        return $this->save(false);
-    }
+     public function findByVerificationToken()
+     {
+          return self::findOne(['verification_token' => $this->verification_token]);
+     }
 }

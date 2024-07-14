@@ -29,12 +29,17 @@ $config = [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-        'mailer' => [
-            'class' => \yii\symfonymailer\Mailer::class,
-            'viewPath' => '@app/mail',
-            // send all mails to a file by default.
-            'useFileTransport' => true,
-        ],
+         'mailer' => [
+              'class' => 'yii\swiftmailer\Mailer',
+              'transport' => [
+                   'class' => 'Swift_SmtpTransport',
+                   'host' => 'smtp.gmail.com',
+                   'port' => '587',
+                   'username' => 'huysanti123456@gmail.com',
+                   'password' => 'buxk ghay epzs gclb',
+                   'encryption' => 'tls',
+              ],
+         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [

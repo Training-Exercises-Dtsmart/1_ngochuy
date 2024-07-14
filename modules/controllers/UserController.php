@@ -68,4 +68,36 @@ class UserController extends Controller
 
         return $this->json(false, [], 'Logout failed', HttpStatus::UNAUTHORIZED);
     }
+
+     public function actionVerifyEmail($token)
+     {
+          if (empty($token) || !is_string($token)) {
+               return $this->json(false, [], 'Verification token cannot be blank.', HttpStatus::BAD_REQUEST);
+          }
+
+          $user = User::findByVerificationToken($token);
+          if (!$user) {
+               return $this->json(false, [], 'Invalid verification token.', HttpStatus::BAD_REQUEST);
+          }
+
+          $user->status = User::STATUS_ACTIVE; // Assuming you have a status attribute to activate the user
+          $user->verification_token = null;
+
+          if ($user->save(false)) {
+               return $this->json(true, ['data' => $user], 'Account verified successfully.', HttpStatus::OK);
+          }
+
+          return $this->json(false, [], 'Verification failed.', HttpStatus::BAD_REQUEST);
+     }
+
+     public function actionSendmail()
+     {
+          Yii::$app->mailer->compose()
+               ->setFrom('no-reply@domain.com')
+               ->setTo('huysanti123456@gmail.com')
+               ->setSubject('Xin chào')
+               ->setTextBody('Hello')
+               ->setHtmlBody('<b>HTML content</b>')
+               ->send();
+     }
 }

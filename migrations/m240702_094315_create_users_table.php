@@ -20,6 +20,7 @@ class m240702_094315_create_users_table extends Migration
             'phone' => $this->string(),
             'password' => $this->string(),
             'access_token' => $this->string()->notNull(),
+            'verification_token' => $this->string(255),
             'age' => $this->integer(),
             'created_at' => $this->dateTime(),
             'updated_at' => $this->dateTime(),
