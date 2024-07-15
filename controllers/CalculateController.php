@@ -2,9 +2,8 @@
 
 namespace app\controllers;
 
-use app\modules\models\HttpStatus;
+use modules\models\HttpStatus;
 use Yii;
-use app\controllers\Controller;
 
 class CalculateController extends Controller
 {

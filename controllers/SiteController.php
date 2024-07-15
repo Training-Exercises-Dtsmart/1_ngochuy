@@ -7,7 +7,7 @@ use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\filters\VerbFilter;
-use app\models\LoginForm;
+use app\models\form\LoginForm;
 use app\models\ContactForm;
 use app\models\Product;
 
@@ -28,6 +28,11 @@ class SiteController extends Controller
                         'allow' => true,
                         'roles' => ['@'],
                     ],
+//                     [
+//                          'actions' => ['signup'],
+//                          'allow' => true,
+//                          'roles' => ['@'],
+//                     ]
                 ],
             ],
             'verbs' => [

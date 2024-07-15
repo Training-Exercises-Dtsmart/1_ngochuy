@@ -7,7 +7,7 @@ use User;
 /**
  * This is the ActiveQuery class for [[User]].
  *
- * @see User
+ * @see \modules\models\User
  * @method User[] all($db = null)
  * @method User one($db = null)
  */

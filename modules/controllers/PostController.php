@@ -3,18 +3,19 @@
 namespace app\modules\controllers;
 
 
-use Yii;
+use app\controllers\Controller;
+use app\modules\models\AddToPost;
 use app\modules\models\form\PostForm;
 use app\modules\models\HttpStatus;
+use app\modules\models\pagination\Pagination;
 use app\modules\models\Post;
 use app\modules\models\search\PostSearch;
-use app\controllers\Controller;
-use app\modules\models\pagination\Pagination;
+use Yii;
 
 
 class PostController extends Controller
 {
-     public $modelClass = 'app\modules\models\Post';
+     public $modelClass = 'modules\models\Post';
      public $serializer = [
           'class' => 'yii\rest\Serializer',
           'collectionEnvelope' => 'items',
@@ -38,8 +39,6 @@ class PostController extends Controller
                     return $this->json(true, ["product" => $postForm], "Create product successfully", HttpStatus::OK);
                }
           }
-          return $this->json(false, ["errors" => $postForm->getErrors()], "Can't create new product", HttpStatus::BAD_REQUEST);
-
           return $this->json(false, ['errors' => $postForm->getErrors()], "Bad request", HttpStatus::BAD_REQUEST);
      }
 
@@ -86,6 +85,16 @@ class PostController extends Controller
           }
 
           return $this->json(true, ["posts" => $dataProvider->getModels()], "Find successfully");
+     }
+
+
+     public function actionCreateFakeData()
+     {
+          if (Yii::$app->queue->delay(2)->push(new AddToPost())) {
+               return $this->json(true, [], "Enqueued job to create fake data", HttpStatus::OK);
+          } else {
+               return $this->json(false, [], "Failed to enqueue job", HttpStatus::INTERNAL_SERVER_ERROR);
+          }
      }
 
 }

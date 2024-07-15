@@ -1,6 +1,6 @@
 <?php
 
-namespace app\modules\models\form;
+namespace modules\models\form;
 
 use app\models\User;
 use app\modules\models\resource\UserResource;

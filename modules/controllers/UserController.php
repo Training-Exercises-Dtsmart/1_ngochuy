@@ -2,14 +2,14 @@
 
 namespace app\modules\controllers;
 
+use app\controllers\Controller;
+use app\models\User;
 use app\modules\models\form\SignInForm;
 use app\modules\models\form\SignupForm;
-use Yii;
 use app\modules\models\form\UserForm;
-use app\models\User;
-use app\controllers\Controller;
 use app\modules\models\HttpStatus;
 use app\modules\models\pagination\Pagination;
+use Yii;
 
 class UserController extends Controller
 {

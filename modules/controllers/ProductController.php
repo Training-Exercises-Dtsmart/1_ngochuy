@@ -1,19 +1,18 @@
 <?php
 
-namespace app\modules\controllers;
+namespace modules\controllers;
 
-use Yii;
-use app\models\search\ProductSearch;
-use app\modules\models\Product;
-use app\models\form\ProductForm;
-use app\modules\models\HttpStatus;
 use app\controllers\Controller;
+use app\models\form\ProductForm;
+use app\models\search\ProductSearch;
+use app\modules\models\HttpStatus;
 use app\modules\models\pagination\Pagination;
-use yii\filters\auth\HttpBearerAuth;
+use app\modules\models\Product;
+use Yii;
 
 class ProductController extends Controller
 {
-    public $modelClass = 'app\modules\models\Product';
+    public $modelClass = 'modules\models\Product';
 
     public $serializer = [
         'class' => 'yii\rest\Serializer',

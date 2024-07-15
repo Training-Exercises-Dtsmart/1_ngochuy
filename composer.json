@@ -20,7 +20,9 @@
         "yiisoft/yii2-symfonymailer": "~2.0.3",
         "schmunk42/yii2-giiant": "@dev",
         "yiisoft/yii2-swiftmailer": "^2.1",
-        "swiftmailer/swiftmailer": "^6.0"
+        "swiftmailer/swiftmailer": "^6.0",
+        "mdmsoft/yii2-admin": "*",
+        "yiisoft/yii2-queue": "^2.3"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",

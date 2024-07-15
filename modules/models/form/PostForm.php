@@ -2,8 +2,9 @@
 
 namespace app\modules\models\form;
 
-use Yii;
 use app\models\Post;
+use app\modules\models\AddToPost;
+use Yii;
 use yii\web\UploadedFile;
 
 class PostForm extends Post
@@ -65,5 +66,4 @@ class PostForm extends Post
           }
           return false;
      }
-
 }
