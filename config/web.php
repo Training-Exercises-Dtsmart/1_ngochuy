@@ -57,6 +57,11 @@ $config = [
                 '<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
             ],
         ],
+         'authManager' => [
+              'class' => 'yii\rbac\DbManager',
+              // uncomment if you want to cache RBAC items hierarchy
+              // 'cache' => 'cache',
+         ],
     ],
     'modules' => [ 'api' => [
         'class' => 'app\modules\Module',
