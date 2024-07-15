@@ -1,6 +1,6 @@
 <?php
 
-namespace modules\controllers;
+namespace app\modules\controllers;
 
 use app\controllers\Controller;
 use app\models\form\ProductForm;
@@ -20,14 +20,28 @@ class ProductController extends Controller
     ];
     public function actionIndex()
     {
-        $products = Product::find();
-        if (!$products) {
-            return $this->json(false, [], 'Product not found', HttpStatus::NOT_FOUND);
-        }
+//        $products = Product::find();
+//        if (!$products) {
+//            return $this->json(false, [], 'Product not found', HttpStatus::NOT_FOUND);
+//        }
+//
+//        $dataProvider = Pagination::getPagination($products, 10, SORT_DESC);
+//
+//        return $this->json(true, ["products" => $dataProvider], "Success", HttpStatus::OK);
+           $cacheKey = 'product_index_' . md5(json_encode(Yii::$app->request->queryParams));
+          $cachedData = Yii::$app->cache->get($cacheKey);
 
-        $dataProvider = Pagination::getPagination($products, 10, SORT_DESC);
-        
-        return $this->json(true, ["products" => $dataProvider], "Success", HttpStatus::OK);
+         if ($cachedData === false) {
+              $searchModel = new ProductSearch();
+              $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+              $cachedData = $dataProvider->getModels();
+              Yii::$app->cache->set($cacheKey, $cachedData, 3600); // Cache for 1 hour
+         }
+
+         return $this->json(true, [
+              "products" => $cachedData
+         ], "Success", 200);
+
     }
 
     public function actionView($id)
