@@ -62,7 +62,6 @@ $config = [
                'showScriptName' => false,
                'rules' => [
                     '<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
-//                 ['class' =>  'yii\rest\UrlRule', 'controller' =>  ['v1/api'], 'except' => ['delete', 'create', 'update'] ]
                ],
           ],
           'authManager' => [
@@ -70,6 +69,7 @@ $config = [
                // uncomment if you want to cache RBAC items hierarchy
                // 'cache' => 'cache',
           ],
+
      ],
      'modules' => [
           'api' => [

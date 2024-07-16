@@ -19,8 +19,8 @@ class UserController extends Controller
         if (!$user) {
             return $this->json(false, [], 'User not found', HttpStatus::NOT_FOUND);
         }
-
-        $dataProvider = Pagination::getPagination($user, 10, SORT_DESC);
+        $pageSize = Yii::$app->request->get('pageSize', 20);
+        $dataProvider = Pagination::getPagination($user, $pageSize, SORT_DESC);
         return $this->json(true, ['data' => $dataProvider], 'success', HttpStatus::OK);
     }
 
