@@ -45,7 +45,18 @@ abstract class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInt
         return 'users';
     }
 
-    /**
+    public function beforeSave($insert)
+    {
+       if (parent::beforeSave($insert)) {
+            if($this->isNewRecord) {
+                 $this->auth_key = Yii::$app->security->generateRandomString();
+            }
+            return true;
+       }
+       return false;
+    }
+
+     /**
      * @inheritdoc
      */
     public function behaviors()

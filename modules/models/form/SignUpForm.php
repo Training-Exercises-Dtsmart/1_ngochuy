@@ -1,6 +1,6 @@
 <?php
 
-namespace modules\models\form;
+namespace app\modules\models\form;
 
 use app\models\User;
 use app\modules\models\resource\UserResource;
@@ -47,7 +47,7 @@ class SignupForm extends \app\models\form\LoginForm
                $this->_user->access_token = $security->generateRandomString(255);
                $this->_user->verification_token = $security->generateRandomString() . '_' . time();
                if ($this->_user->save()) {
-                    $this->sendVerificationEmail($this->_user);
+//                    $this->sendVerificationEmail($this->_user);
                     return true;
                }
                return false;

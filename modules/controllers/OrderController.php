@@ -3,12 +3,14 @@
 namespace app\modules\controllers;
 
 use app\modules\models\form\OrderForm;
+use app\modules\models\User;
 use Yii;
 use app\controllers\Controller;
 use app\modules\models\HttpStatus;
 use app\modules\models\Order;
 use app\modules\models\pagination\Pagination;
 use app\modules\models\search\OrderSearch;
+use yii\web\UnauthorizedHttpException;
 
 
 /**
@@ -16,7 +18,47 @@ use app\modules\models\search\OrderSearch;
  */
 class OrderController extends Controller
 {
-    public function actionIndex()
+
+     public function beforeAction($action)
+     {
+          if (!parent::beforeAction($action)) {
+               return false;
+          }
+
+          // Log the action being executed
+          Yii::info("Executing action: " . $action->id, __METHOD__);
+
+          // Token validation
+          $headers = Yii::$app->request->headers;
+          $authHeader = $headers->get('Authorization');
+          if ($authHeader && preg_match('/^Bearer\s+(.*?)$/', $authHeader, $matches)) {
+               $token = $matches[1];
+               // Validate the token
+               if (!$this->validateToken($token)) {
+                    throw new UnauthorizedHttpException('Invalid token.');
+               }
+          } else {
+               throw new UnauthorizedHttpException('No token provided.');
+          }
+
+          // Additional initialization or checks can be added here
+
+          return true; // Return true to proceed with the action
+     }
+
+     // Example method to validate the token
+     protected function validateToken($token)
+     {
+          // Find the user by access token
+          $user = User::findOne(['access_token' => $token]);
+          if ($user) {
+               // Optionally, you can add additional checks here (e.g., token expiration)
+               return true;
+          }
+          return false;
+     }
+
+     public function actionIndex()
     {
          $orders = Order::find();
         if (!$orders) {
@@ -53,9 +95,13 @@ class OrderController extends Controller
 
      public function actionUpdate($id)
      {
-          $order = Order::findOne($id);
-          $order->load(Yii::$app->request->post(), '');
+          $order = OrderForm::findOne($id);
+          if($order == null)
+          {
+               return $this->json(false, [], "Order not found", HttpStatus::NOT_FOUND);
+          }
 
+          $order->load(Yii::$app->request->post(), '');
           if (!$order->validate() || !$order->save()) {
                return $this->json(false, ['errors' => $order->getErrors()], "Can't update product", HttpStatus::BAD_REQUEST);
           }
