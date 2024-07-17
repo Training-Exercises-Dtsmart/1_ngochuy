@@ -71,6 +71,24 @@
   <img width="1345" alt="Ảnh màn hình 2024-07-09 lúc 16 19 29" src="https://github.com/Training-Exercises-Dtsmart/1_ngochuy/assets/145101998/3674fb29-da47-45ce-8788-68d88d5840a3">
 
 
+-------------------------------------- 
+
+*** Week 3: 
+
+- Crete Docker :
+
+<img width="981" alt="Ảnh màn hình 2024-07-17 lúc 16 39 26" src="https://github.com/user-attachments/assets/d55a8a02-779f-4e00-b05f-7db719f32a8f">
+
   
+<img width="1009" alt="Ảnh màn hình 2024-07-17 lúc 17 09 15" src="https://github.com/user-attachments/assets/ea5bb85e-83cc-489d-a471-8cdd615ac299">
+
+
+<img width="1038" alt="Ảnh màn hình 2024-07-17 lúc 17 25 58" src="https://github.com/user-attachments/assets/e731f2bc-31bb-4e79-8e92-5a6bb827cf43">
+
+
+<img width="1436" alt="Ảnh màn hình 2024-07-17 lúc 17 26 09" src="https://github.com/user-attachments/assets/8d2545ac-8664-4c25-81c8-f8b0802025ad">
+
+
+
 
 
