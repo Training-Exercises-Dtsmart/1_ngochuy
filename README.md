@@ -75,7 +75,7 @@
 
 *** Week 3: 
 
-- Crete Docker :
+- Crete Docker and Setup Nginx and run nginx inside docker :
 
 <img width="981" alt="Ảnh màn hình 2024-07-17 lúc 16 39 26" src="https://github.com/user-attachments/assets/d55a8a02-779f-4e00-b05f-7db719f32a8f">
 
