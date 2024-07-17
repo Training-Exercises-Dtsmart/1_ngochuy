@@ -105,4 +105,15 @@ class ProductController extends Controller
         return $this->json(true, [], 'Delete product successfully', HttpStatus::OK);
 
     }
+         public function actionComponent()
+    {
+         $data = Yii::$app->common->getData();
+
+         if ($data === null) {
+              return $this->json(false, [], "No data found", HttpStatus::NOT_FOUND);
+         }
+
+         return $this->json(true, ["products" => $data], "Data retrieved successfully", HttpStatus::OK);
+    }
+
 }

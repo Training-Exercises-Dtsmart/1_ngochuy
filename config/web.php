@@ -69,6 +69,9 @@ $config = [
                // uncomment if you want to cache RBAC items hierarchy
                // 'cache' => 'cache',
           ],
+          'common' => [
+               'class' => 'app\components\CommonComponent'
+          ],
 
      ],
      'modules' => [
@@ -82,7 +85,7 @@ $config = [
           ],
           'admin' => [
                'class' => 'mdm\admin\Module',
-          ]
+          ],
      ],
 //     'as access' => [
 //          'class' => 'mdm\admin\components\AccessControl',
