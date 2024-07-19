@@ -124,4 +124,9 @@ abstract class Comment extends \yii\db\ActiveRecord
     {
         return new CommentQuery(static::class);
     }
+
+    public function belogsTo($userId)
+    {
+         return $this->createdBy->id === $userId;
+    }
 }
