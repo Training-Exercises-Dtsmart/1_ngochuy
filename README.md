@@ -1,4 +1,4 @@
-*** Day 2: 
+<img width="1057" alt="Ảnh màn hình 2024-07-19 lúc 14 17 57" src="https://github.com/user-attachments/assets/8031546d-8e67-45df-ba59-f4aebec6678e">*** Day 2: 
 
 - Schema database :
   
@@ -112,8 +112,19 @@
   
 <img width="1055" alt="Ảnh màn hình 2024-07-19 lúc 11 53 18" src="https://github.com/user-attachments/assets/59d26c09-186f-4cc4-bd40-57fe00f0f58e">
 
+
+
+**  Send email to customer when they checkout order
+
+<img width="1070" alt="Ảnh màn hình 2024-07-19 lúc 16 20 27" src="https://github.com/user-attachments/assets/925bd4fc-eab9-4a43-84f1-d0172d5614db">
+
+
++ Check email order :
+
+<img width="1180" alt="Ảnh màn hình 2024-07-19 lúc 16 20 10" src="https://github.com/user-attachments/assets/7812720d-a40c-485e-88c8-ac6186622cf3">
+
+
   
-   
    
 
 
