@@ -39,17 +39,30 @@ $config = [
                'errorAction' => 'site/error',
           ],
           'mailer' => [
-               'class' => 'yii\swiftmailer\Mailer',
-               'viewPath' => '@mail',
+               'class' => 'yii\symfonymailer\Mailer',
+               'viewPath' => '@app/mail',
+               'useFileTransport' => false,
                'transport' => [
-                    'class' => 'Swift_SmtpTransport',
-                    'host' => 'smtp.gmail.com',
-                    'port' => '587',
-                    'username' => 'huysanti123456@gmail.com',
-                    'password' => 'buxk ghay epzs gclb',
-                    'encryption' => 'tls',
+//                    'class' => 'Swift_SmtpTransport',
+//                    'host' => 'smtp.gmail.com',
+//                    'port' => '587',
+//                    'username' => 'huysanti123456@gmail.com',
+//                    'password' => 'buxk ghay epzs gclb',
+//                    'encryption' => 'tls',
+                    'dsn' => 'smtp://huysanti123456@gmail.com:buxkghayepzsgclb@smtp.gmail.com:587?encryption=tls',
                ],
           ],
+//          'mail' => [
+//               'class' => 'yii\swiftmailer\Mailer',
+//               'transport' => [
+//                    'class' => 'Swift_SmtpTransport',
+//                    'host' => 'sandbox.smtp.mailtrap.io',
+//                    'username' => '8316579d2af80c',
+//                    'password' => '********50c9',
+//                    'port' => '2525',
+//                    'encryption' => 'tls',
+//               ],
+//          ],
           'log' => [
                'traceLevel' => YII_DEBUG ? 3 : 0,
                'targets' => [

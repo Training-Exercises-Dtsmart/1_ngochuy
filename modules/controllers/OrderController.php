@@ -59,16 +59,16 @@ class OrderController extends Controller
      }
 
      public function actionIndex()
-    {
-         $orders = Order::find();
-        if (!$orders) {
-            return $this->json(false, [], 'Order not found', HttpStatus::NOT_FOUND);
-        }
+     {
+          $orders = Order::find();
+          if (!$orders) {
+               return $this->json(false, [], 'Order not found', HttpStatus::NOT_FOUND);
+          }
 
-        $dataProvider = Pagination::getPagination($orders, 10, SORT_DESC);
+          $dataProvider = Pagination::getPagination($orders, 10, SORT_DESC);
 
-        return $this->json(true, ["products" => $dataProvider], "Success", HttpStatus::OK);
-    }
+          return $this->json(true, ["products" => $dataProvider], "Success", HttpStatus::OK);
+     }
 
      public function actionSearch()
      {
@@ -90,14 +90,23 @@ class OrderController extends Controller
                return $this->json(false, ["errors" => $orderForm->getErrors()], "Can't create new product", HttpStatus::BAD_REQUEST);
           }
 
-          return $this->json(true, ["product" => $orderForm], "Create product successfully", HttpStatus::OK);
+          if ($orderForm->save()) {
+              if ($orderForm->sendEmailToVendor())
+              {
+                   Yii::error("Email to the vendor is not sent");
+              }
+              else if ($orderForm->sendEmailToCustomer())
+              {
+                    Yii::error("Email to the customer is not sent");
+              }
+          }
+          return $this->json(true, ["product" => $orderForm], "Create product and send email has successfully", HttpStatus::OK);
      }
 
      public function actionUpdate($id)
      {
           $order = OrderForm::findOne($id);
-          if($order == null)
-          {
+          if ($order == null) {
                return $this->json(false, [], "Order not found", HttpStatus::NOT_FOUND);
           }
 
@@ -107,6 +116,30 @@ class OrderController extends Controller
           }
 
           return $this->json(true, ['order' => $order], 'Update product successfully', HttpStatus::OK);
+     }
+
+     protected function sendEmailToVendor()
+     {
+          return Yii::$app->mailer->compose(
+               ['html' => 'order_completed_vendor-html', 'text' => 'order_completed_vendor-text'],
+               ['order' => $this]
+          )
+               ->setFrom([Yii::$app->params['supportEmail'] => Yii::$app->name . 'robot'])
+               ->setTo(Yii::$app->params['vendorEmail'])
+               ->setSubject('New order has been made at: ' . Yii::$app->name)
+               ->send();
+     }
+
+     protected function sendEmailToCustomer()
+     {
+          return Yii::$app->mailer->compose(
+               ['html' => 'order_completed_customer-html', 'text' => 'order_completed_customer-text'],
+               ['order' => $this]
+          )
+               ->setFrom([Yii::$app->params['supportEmail'] => Yii::$app->name. 'robot'])
+               ->setTo($this->email)
+               ->setSubject('Your order has been completed at: '. Yii::$app->name)
+               ->send();
      }
 
      public function actionDelete($id)
