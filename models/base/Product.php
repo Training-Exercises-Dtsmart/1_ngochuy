@@ -30,6 +30,7 @@ use \app\models\ProductQuery;
  * @property string $updated_at
  *
  * @property \app\models\CategoryProduct $categoryProduct
+ * @property \app\models\Comment[] $comments
  * @property \app\models\User $createdBy
  * @property \app\models\OrderItem[] $orderItems
  * @property \app\models\User $updatedBy
@@ -110,6 +111,14 @@ abstract class Product extends \yii\db\ActiveRecord
     public function getCategoryProduct()
     {
         return $this->hasOne(\app\models\CategoryProduct::class, ['id' => 'category_product_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getComments()
+    {
+        return $this->hasMany(\app\models\Comment::class, ['product_id' => 'id']);
     }
 
     /**

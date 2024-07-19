@@ -28,6 +28,8 @@ $config = [
           // ],
           'cache' => [
                'class' => 'yii\caching\FileCache',
+//               'class' => 'yii\caching\AppCache',
+               'keyPrefix' => 'myapp'
           ],
           'user' => [
                'identityClass' => 'app\models\User',
@@ -38,6 +40,7 @@ $config = [
           ],
           'mailer' => [
                'class' => 'yii\swiftmailer\Mailer',
+               'viewPath' => '@mail',
                'transport' => [
                     'class' => 'Swift_SmtpTransport',
                     'host' => 'smtp.gmail.com',

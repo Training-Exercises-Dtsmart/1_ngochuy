@@ -25,7 +25,9 @@ use \app\models\UserQuery;
  * @property string $created_at
  * @property string $updated_at
  *
+ * @property \app\models\AuthAssignment[] $authAssignments
  * @property \app\models\CategoryPost[] $categoryPosts
+ * @property \app\models\Comment[] $comments
  * @property \app\models\OrderItem[] $orderItems
  * @property \app\models\Order[] $orders
  * @property \app\models\Post[] $posts
@@ -45,18 +47,7 @@ abstract class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInt
         return 'users';
     }
 
-    public function beforeSave($insert)
-    {
-       if (parent::beforeSave($insert)) {
-            if($this->isNewRecord) {
-                 $this->auth_key = Yii::$app->security->generateRandomString();
-            }
-            return true;
-       }
-       return false;
-    }
-
-     /**
+    /**
      * @inheritdoc
      */
     public function behaviors()
@@ -108,9 +99,25 @@ abstract class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInt
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getAuthAssignments()
+    {
+        return $this->hasMany(\app\models\AuthAssignment::class, ['user_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getCategoryPosts()
     {
         return $this->hasMany(\app\models\CategoryPost::class, ['user_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getComments()
+    {
+        return $this->hasMany(\app\models\Comment::class, ['created_by' => 'id']);
     }
 
     /**
@@ -177,7 +184,6 @@ abstract class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInt
     {
         return new UserQuery(static::class);
     }
-
      public static function findIdentity($id)
      {
           return self::findOne($id);
