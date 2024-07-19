@@ -3,7 +3,7 @@
  * @Author: RobertPham0327 s3926681@rmit.edu.vn
  * @Date: 2024-07-19 10:13:35
  * @LastEditors: RobertPham0327 s3926681@rmit.edu.vn
- * @LastEditTime: 2024-07-19 11:42:24
+ * @LastEditTime: 2024-07-19 11:51:17
  * @FilePath: modules/controllers/CommentController.php
  * @Description: 这是默认设置,可以在设置》工具》File Description中进行配置
  */
@@ -69,17 +69,18 @@ class CommentController extends Controller
 
      public function actionUpdate($id)
      {
-          $comment = CommentForm::find()->where(['id' => $id])->one();
-
-          if ($comment == null) {
-               return $this->json(false, [], 'Comment not found', HttpStatus::NOT_FOUND);
-          }
-          $comment->load(Yii::$app->request->post());
-          if(!$comment->validate() || !$comment->save())
+          $comment = CommentForm::findOne($id);
+          if($comment == null)
           {
-               return $this->json(false, ['errors' => $comment->getErrors()],"Update comment fails", HttpStatus::BAD_REQUEST);
+               return $this->json(false, [], "Order not found", HttpStatus::NOT_FOUND);
           }
-          return $this->json(true, ['comment' => $comment],"Update Product success", HttpStatus::OK);
+
+          $comment->load(Yii::$app->request->post(), '');
+          if (!$comment->validate() || !$comment->save()) {
+               return $this->json(false, ['errors' => $comment->getErrors()], "Can't update comment", HttpStatus::BAD_REQUEST);
+          }
+
+          return $this->json(true, ['order' => $comment], 'Update comment successfully', HttpStatus::OK);
      }
 
 
