@@ -89,6 +89,26 @@
 <img width="1436" alt="Ảnh màn hình 2024-07-17 lúc 17 26 09" src="https://github.com/user-attachments/assets/8d2545ac-8664-4c25-81c8-f8b0802025ad">
 
 
+- Write APIs Comment Product:
 
+  * Get Comemnt:
+    
+    <img width="1065" alt="Ảnh màn hình 2024-07-19 lúc 11 52 48" src="https://github.com/user-attachments/assets/70b5c511-92fb-4a7a-a367-36a72483651b">
+
+ * Creeate Comment: 
+   
+  <img width="1063" alt="Ảnh màn hình 2024-07-19 lúc 11 52 34" src="https://github.com/user-attachments/assets/bd54f15e-8133-4c68-b62c-49a9eac3c746">
+
+ * Update Comment:
+   
+<img width="1065" alt="Ảnh màn hình 2024-07-19 lúc 11 52 59" src="https://github.com/user-attachments/assets/88fd10df-6ad6-43e8-b07c-ff1f7709ff82">
+
+* Delete Comment:
+  
+<img width="1055" alt="Ảnh màn hình 2024-07-19 lúc 11 53 18" src="https://github.com/user-attachments/assets/59d26c09-186f-4cc4-bd40-57fe00f0f58e">
+
+  
+   
+   
 
 
