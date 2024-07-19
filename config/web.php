@@ -52,17 +52,12 @@ $config = [
                     'dsn' => 'smtp://huysanti123456@gmail.com:buxkghayepzsgclb@smtp.gmail.com:587?encryption=tls',
                ],
           ],
-//          'mail' => [
-//               'class' => 'yii\swiftmailer\Mailer',
-//               'transport' => [
-//                    'class' => 'Swift_SmtpTransport',
-//                    'host' => 'sandbox.smtp.mailtrap.io',
-//                    'username' => '8316579d2af80c',
-//                    'password' => '********50c9',
-//                    'port' => '2525',
-//                    'encryption' => 'tls',
-//               ],
-//          ],
+          'nexmo' => [
+               'class' => 'app\components\NexmoComponent',
+               'apiKey' => '69bdfb28',
+               'apiSecret' => 'SsU9J4N9b0mVqbJl',
+               'fromNumber' => '84359221014',
+          ],
           'log' => [
                'traceLevel' => YII_DEBUG ? 3 : 0,
                'targets' => [

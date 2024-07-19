@@ -38,7 +38,7 @@ class OrderForm extends Order
                ['order' => $this]
           )
                ->setFrom('huysanti12456@gmail.com')
-               ->setTo('huysanti654321@gmail.com')
+               ->setTo('toan70868@gmail.')
                ->setSubject('Your order has been completed at: ' . Yii::$app->name)
                ->send();
      }
