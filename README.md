@@ -124,7 +124,17 @@
 <img width="1180" alt="Ảnh màn hình 2024-07-19 lúc 16 20 10" src="https://github.com/user-attachments/assets/7812720d-a40c-485e-88c8-ac6186622cf3">
 
 
-  
-   
+-------------------------------------- 
+
+
+*** Week 4 : 
+
++ Create more table, databases for ecommerce apis :
+
+<img width="1139" alt="Ảnh màn hình 2024-07-22 lúc 16 34 35" src="https://github.com/user-attachments/assets/55c0c967-5105-4321-b6f3-87edd6759dd5">
+
+<img width="338" alt="Ảnh màn hình 2024-07-22 lúc 16 34 50" src="https://github.com/user-attachments/assets/5761d95b-5d8a-407c-8c36-b0302934e186">
+
+
 
 
