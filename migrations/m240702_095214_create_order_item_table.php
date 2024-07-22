@@ -65,7 +65,7 @@ class m240702_095214_create_order_item_table extends Migration
             'created_by'
         );
 
-        // add foreign key for table `{{%users}}`
+        // add foreign key for table `{{%users}}``
         $this->addForeignKey(
             '{{%fk-order_item-created_by}}',
             '{{%order_item}}',
