@@ -27,6 +27,7 @@ use \app\models\OrderQuery;
  * @property \app\models\User $customer
  * @property \app\models\OrderAddress[] $orderAddresses
  * @property \app\models\OrderItem[] $orderItems
+ * @property \app\models\PaycomTransaction[] $paycomTransactions
  */
 abstract class Order extends \yii\db\ActiveRecord
 {
@@ -110,6 +111,14 @@ abstract class Order extends \yii\db\ActiveRecord
     public function getOrderItems()
     {
         return $this->hasMany(\app\models\OrderItem::class, ['order_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPaycomTransactions()
+    {
+        return $this->hasMany(\app\models\PaycomTransaction::class, ['order_id' => 'id']);
     }
 
     /**

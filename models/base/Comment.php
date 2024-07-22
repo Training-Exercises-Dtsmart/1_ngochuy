@@ -4,10 +4,11 @@
 
 namespace app\models\base;
 
-use app\models\query\CommentQuery;
+use Yii;
+use yii\helpers\ArrayHelper;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
-use yii\helpers\ArrayHelper;
+use \app\models\CommentQuery;
 
 /**
  * This is the base-model class for table "comment".
@@ -42,10 +43,10 @@ abstract class Comment extends \yii\db\ActiveRecord
     public function behaviors()
     {
         $behaviors = parent::behaviors();
-//        $behaviors['blameable'] = [
-//            'class' => BlameableBehavior::class,
-//            'updatedByAttribute' => false,
-//    ];
+        $behaviors['blameable'] = [
+            'class' => BlameableBehavior::class,
+            'updatedByAttribute' => false,
+    ];
         $behaviors['timestamp'] = [
             'class' => TimestampBehavior::class,
                         ];
@@ -123,10 +124,5 @@ abstract class Comment extends \yii\db\ActiveRecord
     public static function find()
     {
         return new CommentQuery(static::class);
-    }
-
-    public function belogsTo($userId)
-    {
-         return $this->createdBy->id === $userId;
     }
 }

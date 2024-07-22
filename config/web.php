@@ -43,12 +43,6 @@ $config = [
                'viewPath' => '@app/mail',
                'useFileTransport' => false,
                'transport' => [
-//                    'class' => 'Swift_SmtpTransport',
-//                    'host' => 'smtp.gmail.com',
-//                    'port' => '587',
-//                    'username' => 'huysanti123456@gmail.com',
-//                    'password' => 'buxk ghay epzs gclb',
-//                    'encryption' => 'tls',
                     'dsn' => 'smtp://huysanti123456@gmail.com:buxkghayepzsgclb@smtp.gmail.com:587?encryption=tls',
                ],
           ],
@@ -73,6 +67,14 @@ $config = [
                'showScriptName' => false,
                'rules' => [
                     '<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
+               ],
+          ],
+          'fileStorage' => [
+               'class' => 'trntv\filekit\Storage',
+               'baseUrl' => '@web/uploads',
+               'filesystem' => [
+                    'class' => 'app\components\filesystem\LocalFlysystemBuilder',
+                    'path' => '@webroot/uploads'
                ],
           ],
           'authManager' => [

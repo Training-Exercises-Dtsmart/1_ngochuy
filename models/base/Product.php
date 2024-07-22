@@ -29,10 +29,12 @@ use \app\models\ProductQuery;
  * @property string $created_at
  * @property string $updated_at
  *
+ * @property \app\models\Cart[] $carts
  * @property \app\models\CategoryProduct $categoryProduct
  * @property \app\models\Comment[] $comments
  * @property \app\models\User $createdBy
  * @property \app\models\OrderItem[] $orderItems
+ * @property \app\models\ProductImage[] $productImages
  * @property \app\models\User $updatedBy
  */
 abstract class Product extends \yii\db\ActiveRecord
@@ -108,6 +110,14 @@ abstract class Product extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getCarts()
+    {
+        return $this->hasMany(\app\models\Cart::class, ['product_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getCategoryProduct()
     {
         return $this->hasOne(\app\models\CategoryProduct::class, ['id' => 'category_product_id']);
@@ -135,6 +145,14 @@ abstract class Product extends \yii\db\ActiveRecord
     public function getOrderItems()
     {
         return $this->hasMany(\app\models\OrderItem::class, ['product_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProductImages()
+    {
+        return $this->hasMany(\app\models\ProductImage::class, ['product_id' => 'id']);
     }
 
     /**

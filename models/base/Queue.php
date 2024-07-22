@@ -4,8 +4,9 @@
 
 namespace app\models\base;
 
-use app\models\QueueQuery;
+use Yii;
 use yii\helpers\ArrayHelper;
+use \app\models\QueueQuery;
 
 /**
  * This is the base-model class for table "queue".

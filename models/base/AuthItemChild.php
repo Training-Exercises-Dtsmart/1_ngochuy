@@ -4,8 +4,9 @@
 
 namespace app\models\base;
 
-use app\models\AuthItemChildQuery;
+use Yii;
 use yii\helpers\ArrayHelper;
+use \app\models\AuthItemChildQuery;
 
 /**
  * This is the base-model class for table "auth_item_child".

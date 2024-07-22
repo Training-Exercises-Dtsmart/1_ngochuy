@@ -7,19 +7,21 @@ namespace app\models\base;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\behaviors\TimestampBehavior;
-use \app\models\AuthRuleQuery;
+use \app\models\ArticleQuery;
 
 /**
- * This is the base-model class for table "auth_rule".
+ * This is the base-model class for table "articles".
  *
- * @property string $name
- * @property resource $data
+ * @property integer $id
+ * @property string $title
+ * @property string $content
+ * @property string $key
+ * @property string $meta_keywords
+ * @property string $meta_description
  * @property integer $created_at
  * @property integer $updated_at
- *
- * @property \app\models\AuthItem[] $authItems
  */
-abstract class AuthRule extends \yii\db\ActiveRecord
+abstract class Article extends \yii\db\ActiveRecord
 {
 
     /**
@@ -27,7 +29,7 @@ abstract class AuthRule extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'auth_rule';
+        return 'articles';
     }
 
     /**
@@ -50,10 +52,8 @@ abstract class AuthRule extends \yii\db\ActiveRecord
     {
         $parentRules = parent::rules();
         return ArrayHelper::merge($parentRules, [
-            [['name'], 'required'],
-            [['data'], 'string'],
-            [['name'], 'string', 'max' => 64],
-            [['name'], 'unique']
+            [['content'], 'string'],
+            [['title', 'key', 'meta_keywords', 'meta_description'], 'string', 'max' => 255]
         ]);
     }
 
@@ -63,27 +63,23 @@ abstract class AuthRule extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return ArrayHelper::merge(parent::attributeLabels(), [
-            'name' => 'Name',
-            'data' => 'Data',
+            'id' => 'ID',
+            'title' => 'Title',
+            'content' => 'Content',
+            'key' => 'Key',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
+            'meta_keywords' => 'Meta Keywords',
+            'meta_description' => 'Meta Description',
         ]);
     }
 
     /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getAuthItems()
-    {
-        return $this->hasMany(\app\models\AuthItem::class, ['rule_name' => 'name']);
-    }
-
-    /**
      * @inheritdoc
-     * @return AuthRuleQuery the active query used by this AR class.
+     * @return ArticleQuery the active query used by this AR class.
      */
     public static function find()
     {
-        return new AuthRuleQuery(static::class);
+        return new ArticleQuery(static::class);
     }
 }

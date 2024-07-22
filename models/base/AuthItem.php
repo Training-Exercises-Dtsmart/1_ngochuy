@@ -4,9 +4,10 @@
 
 namespace app\models\base;
 
-use app\models\AuthItemQuery;
-use yii\behaviors\TimestampBehavior;
+use Yii;
 use yii\helpers\ArrayHelper;
+use yii\behaviors\TimestampBehavior;
+use \app\models\AuthItemQuery;
 
 /**
  * This is the base-model class for table "auth_item".

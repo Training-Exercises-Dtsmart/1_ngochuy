@@ -26,6 +26,7 @@ use \app\models\UserQuery;
  * @property string $updated_at
  *
  * @property \app\models\AuthAssignment[] $authAssignments
+ * @property \app\models\Cart[] $carts
  * @property \app\models\CategoryPost[] $categoryPosts
  * @property \app\models\Comment[] $comments
  * @property \app\models\OrderItem[] $orderItems
@@ -35,8 +36,9 @@ use \app\models\UserQuery;
  * @property \app\models\Product[] $products
  * @property \app\models\Product[] $products0
  * @property \app\models\UserAddress[] $userAddresses
+ * @property \app\models\UserDeliveryAddress[] $userDeliveryAddresses
  */
-abstract class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
+abstract class User extends \yii\db\ActiveRecord implements  \yii\web\IdentityInterface
 {
 
     /**
@@ -102,6 +104,14 @@ abstract class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInt
     public function getAuthAssignments()
     {
         return $this->hasMany(\app\models\AuthAssignment::class, ['user_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCarts()
+    {
+        return $this->hasMany(\app\models\Cart::class, ['user_id' => 'id']);
     }
 
     /**
@@ -177,6 +187,14 @@ abstract class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInt
     }
 
     /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserDeliveryAddresses()
+    {
+        return $this->hasMany(\app\models\UserDeliveryAddress::class, ['user_id' => 'id']);
+    }
+
+    /**
      * @inheritdoc
      * @return UserQuery the active query used by this AR class.
      */
@@ -184,6 +202,7 @@ abstract class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInt
     {
         return new UserQuery(static::class);
     }
+
      public static function findIdentity($id)
      {
           return self::findOne($id);

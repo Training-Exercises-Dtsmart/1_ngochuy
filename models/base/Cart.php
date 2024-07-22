@@ -7,19 +7,24 @@ namespace app\models\base;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\behaviors\TimestampBehavior;
-use \app\models\AuthAssignmentQuery;
+use \app\models\CartQuery;
 
 /**
- * This is the base-model class for table "auth_assignment".
+ * This is the base-model class for table "cart".
  *
- * @property string $item_name
+ * @property integer $id
  * @property integer $user_id
+ * @property integer $product_id
+ * @property integer $qty
+ * @property integer $delivery_types_id
+ * @property integer $status
  * @property integer $created_at
  *
- * @property \app\models\AuthItem $itemName
+ * @property \app\models\DeliveryType $deliveryTypes
+ * @property \app\models\Product $product
  * @property \app\models\User $user
  */
-abstract class AuthAssignment extends \yii\db\ActiveRecord
+abstract class Cart extends \yii\db\ActiveRecord
 {
 
     /**
@@ -27,7 +32,7 @@ abstract class AuthAssignment extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'auth_assignment';
+        return 'cart';
     }
 
     /**
@@ -51,11 +56,9 @@ abstract class AuthAssignment extends \yii\db\ActiveRecord
     {
         $parentRules = parent::rules();
         return ArrayHelper::merge($parentRules, [
-            [['item_name', 'user_id'], 'required'],
-            [['user_id'], 'integer'],
-            [['item_name'], 'string', 'max' => 64],
-            [['item_name'], 'unique'],
-            [['item_name'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\AuthItem::class, 'targetAttribute' => ['item_name' => 'name']],
+            [['user_id', 'product_id', 'qty', 'delivery_types_id', 'status'], 'integer'],
+            [['delivery_types_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\DeliveryType::class, 'targetAttribute' => ['delivery_types_id' => 'id']],
+            [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Product::class, 'targetAttribute' => ['product_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\User::class, 'targetAttribute' => ['user_id' => 'id']]
         ]);
     }
@@ -66,18 +69,30 @@ abstract class AuthAssignment extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return ArrayHelper::merge(parent::attributeLabels(), [
-            'item_name' => 'Item Name',
-            'created_at' => 'Created At',
+            'id' => 'ID',
             'user_id' => 'User ID',
+            'product_id' => 'Product ID',
+            'qty' => 'Qty',
+            'delivery_types_id' => 'Delivery Types ID',
+            'created_at' => 'Created At',
+            'status' => 'Status',
         ]);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getItemName()
+    public function getDeliveryTypes()
     {
-        return $this->hasOne(\app\models\AuthItem::class, ['name' => 'item_name']);
+        return $this->hasOne(\app\models\DeliveryType::class, ['id' => 'delivery_types_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProduct()
+    {
+        return $this->hasOne(\app\models\Product::class, ['id' => 'product_id']);
     }
 
     /**
@@ -90,10 +105,10 @@ abstract class AuthAssignment extends \yii\db\ActiveRecord
 
     /**
      * @inheritdoc
-     * @return AuthAssignmentQuery the active query used by this AR class.
+     * @return CartQuery the active query used by this AR class.
      */
     public static function find()
     {
-        return new AuthAssignmentQuery(static::class);
+        return new CartQuery(static::class);
     }
 }
