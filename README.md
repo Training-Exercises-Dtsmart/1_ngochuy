@@ -136,5 +136,15 @@
 <img width="338" alt="Ảnh màn hình 2024-07-22 lúc 16 34 50" src="https://github.com/user-attachments/assets/5761d95b-5d8a-407c-8c36-b0302934e186">
 
 
++ Run Codeceptiomn Unit Test :
+  
+<img width="715" alt="Ảnh màn hình 2024-07-23 lúc 14 50 30" src="https://github.com/user-attachments/assets/2efeccb4-692a-44a1-afde-66f4bb85c707">
+
+
+## Create CI/CD Check CodeCeption Unit Test on Github Action : 
+  
+<img width="1192" alt="Ảnh màn hình 2024-07-23 lúc 14 48 02" src="https://github.com/user-attachments/assets/7bdab240-d406-49f1-ac5f-39959e605f12">
+
+<img width="1418" alt="Ảnh màn hình 2024-07-23 lúc 14 54 55" src="https://github.com/user-attachments/assets/e5b269ee-a5bb-49dd-8413-88a1131fed60">
 
 
