@@ -2,7 +2,7 @@
  # @Author: RobertPham0327 s3926681@rmit.edu.vn
  # @Date: 2024-07-23 12:02:37
  # @LastEditors: RobertPham0327 s3926681@rmit.edu.vn
- # @LastEditTime: 2024-07-23 14:32:02
+ # @LastEditTime: 2024-07-23 14:36:24
  # @FilePath: .github/workflows/ci.yml
  # @Description: 这是默认设置,可以在设置》工具》File Description中进行配置
 ###
@@ -17,66 +17,40 @@ on:
     branches:
       - main
   jobs:
-    tests:
-      runs-on: ubuntu-latest
+   build:
 
-      strategy:
-        matrix:
-          php: [ 8.0, 8.1, 8.2 ]
+    runs-on: ubuntu-latest
 
-      steps:
-        - name: Checkout code
-          uses: actions/checkout@v3
+    services:
+      mysql:
+        image: mysql:5.7
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: test_database
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
 
-        - name: Setup PHP
-          uses: shivammathur/setup-php@v2
-          with:
-            php-version: ${{ matrix.php }}
-            extensions: pdo, sqlite, imagick
-            coverage: none
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-        - name: Validate composer.json and composer.lock
-          run: composer validate
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
 
-        - name: Install dependencies
-          run: composer install --prefer-dist --no-progress --no-interaction --no-suggest --ignore-platform-reqs
-        - name: Run PHPStan
-          run: php vendor/bin/phpstan
+      - name: Install dependencies
+        run: composer install --ignore-platform-reqs
 
-        - name: Run test suite
-          run: |
+      - name: Run test suite
+        run: |
             php vendor/bin/codecept build
             php vendor/bin/codecept run
-#jobs:
-#  build:
-#
-#    runs-on: ubuntu-latest
-#
-#    services:
-#      mysql:
-#        image: mysql:5.7
-#        ports:
-#          - 3306:3306
-#        env:
-#          MYSQL_ROOT_PASSWORD: root
-#          MYSQL_DATABASE: test_database
-#        options: >-
-#          --health-cmd="mysqladmin ping --silent"
-#          --health-interval=10s
-#          --health-timeout=5s
-#          --health-retries=3
-#
-#    steps:
-#      - name: Checkout code
-#        uses: actions/checkout@v3
-#
-#      - name: Set up PHP
-#        uses: shivammathur/setup-php@v2
-#        with:
-#          php-version: '8.3'
-#
-#      - name: Install dependencies
-#        run: composer install --ignore-platform-reqs
 
       
 
