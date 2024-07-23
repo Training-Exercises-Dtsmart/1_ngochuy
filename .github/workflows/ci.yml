@@ -2,7 +2,7 @@
  # @Author: RobertPham0327 s3926681@rmit.edu.vn
  # @Date: 2024-07-23 12:02:37
  # @LastEditors: RobertPham0327 s3926681@rmit.edu.vn
- # @LastEditTime: 2024-07-23 12:24:24
+ # @LastEditTime: 2024-07-23 12:27:07
  # @FilePath: .github/workflows/ci.yml
  # @Description: 这是默认设置,可以在设置》工具》File Description中进行配置
 ###
@@ -52,7 +52,7 @@ jobs:
         env:
           DB_DSN: 'mysql:host=127.0.0.1;dbname=test_database'
           DB_USER: 'root'
-          DB_PASSWORD: 'root'
+          DB_PASSWORD: 
         run: |
           php yii migrate --interactive=0
 
