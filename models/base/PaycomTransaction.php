@@ -4,9 +4,8 @@
 
 namespace app\models\base;
 
-use Yii;
+use app\models\PaycomTransactionQuery;
 use yii\helpers\ArrayHelper;
-use \app\models\PaycomTransactionQuery;
 
 /**
  * This is the base-model class for table "paycom_transactions".

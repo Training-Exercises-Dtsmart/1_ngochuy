@@ -4,9 +4,8 @@
 
 namespace app\models\base;
 
-use Yii;
+use app\models\DeliveryTypeQuery;
 use yii\helpers\ArrayHelper;
-use \app\models\DeliveryTypeQuery;
 
 /**
  * This is the base-model class for table "delivery_types".

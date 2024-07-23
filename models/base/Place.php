@@ -4,9 +4,8 @@
 
 namespace app\models\base;
 
-use Yii;
+use app\models\PlaceQuery;
 use yii\helpers\ArrayHelper;
-use \app\models\PlaceQuery;
 
 /**
  * This is the base-model class for table "places".

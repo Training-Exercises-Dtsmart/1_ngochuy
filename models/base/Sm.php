@@ -4,9 +4,8 @@
 
 namespace app\models\base;
 
-use Yii;
+use app\models\SmQuery;
 use yii\helpers\ArrayHelper;
-use \app\models\SmQuery;
 
 /**
  * This is the base-model class for table "sms".

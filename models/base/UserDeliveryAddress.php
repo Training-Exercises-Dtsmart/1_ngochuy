@@ -4,9 +4,8 @@
 
 namespace app\models\base;
 
-use Yii;
+use app\models\UserDeliveryAddressQuery;
 use yii\helpers\ArrayHelper;
-use \app\models\UserDeliveryAddressQuery;
 
 /**
  * This is the base-model class for table "user_delivery_address".

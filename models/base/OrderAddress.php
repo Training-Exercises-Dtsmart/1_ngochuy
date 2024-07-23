@@ -4,9 +4,8 @@
 
 namespace app\models\base;
 
-use Yii;
+use app\models\OrderAddressQuery;
 use yii\helpers\ArrayHelper;
-use \app\models\OrderAddressQuery;
 
 /**
  * This is the base-model class for table "order_address".

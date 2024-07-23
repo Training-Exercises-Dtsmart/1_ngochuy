@@ -1,0 +1,68 @@
+###
+ # @Author: RobertPham0327 s3926681@rmit.edu.vn
+ # @Date: 2024-07-23 12:02:37
+ # @LastEditors: RobertPham0327 s3926681@rmit.edu.vn
+ # @LastEditTime: 2024-07-23 12:03:18
+ # @FilePath: .github/workflow/ci.yml
+ # @Description: 这是默认设置,可以在设置》工具》File Description中进行配置
+###
+
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:5.7
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: test_database
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.0'
+
+      - name: Install dependencies
+        run: composer install
+
+      - name: Run database migrations
+        env:
+          DB_DSN: 'mysql:host=127.0.0.1;dbname=test_database'
+          DB_USER: 'root'
+          DB_PASSWORD: 'root'
+        run: |
+          php yii migrate --interactive=0
+
+      - name: Run tests
+        run: vendor/bin/phpunit
+
+      - name: Deploy to production
+        if: github.ref == 'refs/heads/main'
+        run: |
+          echo "Deploying to production server..."
+          # Add your deployment script here, e.g., rsync or scp to transfer files to the server
+
+

@@ -4,9 +4,8 @@
 
 namespace app\models\base;
 
-use Yii;
+use app\models\VideoGalleryQuery;
 use yii\helpers\ArrayHelper;
-use \app\models\VideoGalleryQuery;
 
 /**
  * This is the base-model class for table "video_gallery".

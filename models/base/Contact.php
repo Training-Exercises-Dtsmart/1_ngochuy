@@ -4,9 +4,8 @@
 
 namespace app\models\base;
 
-use Yii;
+use app\models\ContactQuery;
 use yii\helpers\ArrayHelper;
-use \app\models\ContactQuery;
 
 /**
  * This is the base-model class for table "contacts".

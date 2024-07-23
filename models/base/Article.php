@@ -4,10 +4,9 @@
 
 namespace app\models\base;
 
-use Yii;
-use yii\helpers\ArrayHelper;
+use app\models\ArticleQuery;
 use yii\behaviors\TimestampBehavior;
-use \app\models\ArticleQuery;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the base-model class for table "articles".
