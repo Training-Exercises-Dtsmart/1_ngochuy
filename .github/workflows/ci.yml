@@ -2,7 +2,7 @@
  # @Author: RobertPham0327 s3926681@rmit.edu.vn
  # @Date: 2024-07-23 12:02:37
  # @LastEditors: RobertPham0327 s3926681@rmit.edu.vn
- # @LastEditTime: 2024-07-23 12:27:07
+ # @LastEditTime: 2024-07-23 12:35:51
  # @FilePath: .github/workflows/ci.yml
  # @Description: 这是默认设置,可以在设置》工具》File Description中进行配置
 ###
@@ -48,21 +48,18 @@ jobs:
       - name: Install dependencies
         run: composer install --ignore-platform-reqs
 
+      - name: Wait for MySQL to be ready
+        run: sleep 10s
+
       - name: Run database migrations
         env:
-          DB_DSN: 'mysql:host=127.0.0.1;dbname=test_database'
+          DB_DSN: 'mysql:host=127.0.0.1;dbname=orders'
           DB_USER: 'root'
-          DB_PASSWORD: 
+          DB_PASSWORD: ''
         run: |
           php yii migrate --interactive=0
 
       - name: Run tests
         run: vendor/bin/phpunit
-
-      - name: Deploy to production
-        if: github.ref == 'refs/heads/main'
-        run: |
-          echo "Deploying to production server..."
-          # Add your deployment script here, e.g., rsync or scp to transfer files to the server
 
 

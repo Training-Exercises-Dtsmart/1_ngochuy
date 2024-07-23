@@ -24,7 +24,8 @@
         "mdmsoft/yii2-admin": "*",
         "yiisoft/yii2-queue": "^2.3",
         "vonage/client": "^4.0",
-        "vonage/client-core": "^4.8"
+        "vonage/client-core": "^4.8",
+        "yiithings/yii2-dotenv": "*"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",
