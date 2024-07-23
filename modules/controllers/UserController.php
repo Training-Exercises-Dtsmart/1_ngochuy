@@ -90,6 +90,18 @@ class UserController extends Controller
           return $this->json(false, [], 'Verification failed.', HttpStatus::BAD_REQUEST);
      }
 
+     public function actionUpdateUser($id)
+     {
+        $model = $this->findModel($id);
+        $model->setAttribute('password', null);
+
+        if ($model->load(Yii::$app->request->post(), '') && $model->save()) {
+            return $this->json(true, ['data' => $model], 'User updated successfully', HttpStatus::OK);
+        }
+
+        return $this->json(false, $model->getErrors(), 'User not updated', HttpStatus::NOT_FOUND);
+     }
+
      public function actionSendmail()
      {
           Yii::$app->mailer->compose()
@@ -99,5 +111,14 @@ class UserController extends Controller
                ->setTextBody('Hello')
                ->setHtmlBody('<b>HTML content</b>')
                ->send();
+     }
+
+     protected function findModel($id)
+     {
+          if (($model = User::findOne($id)) !== null) {
+               return $model;
+          }
+
+         return $this->json(false, [], 'User not found', HttpStatus::NOT_FOUND);
      }
 }

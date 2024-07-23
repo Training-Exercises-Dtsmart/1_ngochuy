@@ -59,12 +59,6 @@ class SignupForm extends \app\models\form\LoginForm
 
      protected function sendVerificationEmail($user)
      {
-//          return Yii::$app->mailer->compose(['layouts/text.php'], ['user' => $user])
-//               ->setFrom('huysanti123456@gmail.com')
-//               ->setTo($this->email)
-//               ->setSubject('Account registration at ' . Yii::$app->name)
-//               ->send();
-
           return Yii::$app->mailer->compose(['user' => $user])
                ->setFrom('no-reply@domain.com')
                ->setTo('huysanti123456@gmail.com')
@@ -72,7 +66,6 @@ class SignupForm extends \app\models\form\LoginForm
                ->setTextBody('Hello')
                ->setHtmlBody('<b>HTML content</b>')
                ->send();
-
 
      }
 }

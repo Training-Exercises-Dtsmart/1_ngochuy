@@ -70,7 +70,6 @@ abstract class User extends \yii\db\ActiveRecord implements  \yii\web\IdentityIn
     {
         $parentRules = parent::rules();
         return ArrayHelper::merge($parentRules, [
-            [['access_token'], 'required'],
             [['age'], 'integer'],
             [['deleted_at'], 'safe'],
             [['name', 'address', 'email', 'phone', 'password', 'access_token', 'verification_token'], 'string', 'max' => 255]
