@@ -50,8 +50,8 @@ jobs:
         
       - name: Run test suite
         run: |
-            php vendor/bin/codecept build
-            php vendor/bin/codecept run
+             ./vendor/bin/codecept build
+             ./vendor/bin/codecept run
 
       - name: Deploy to production
         if: github.ref == 'refs/heads/main'
