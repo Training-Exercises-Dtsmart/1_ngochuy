@@ -2,7 +2,7 @@
  # @Author: RobertPham0327 s3926681@rmit.edu.vn
  # @Date: 2024-07-23 12:02:37
  # @LastEditors: RobertPham0327 s3926681@rmit.edu.vn
- # @LastEditTime: 2024-07-23 12:52:53
+ # @LastEditTime: 2024-07-23 12:54:30
  # @FilePath: .github/workflows/ci.yml
  # @Description: 这是默认设置,可以在设置》工具》File Description中进行配置
 ###
@@ -43,7 +43,7 @@ jobs:
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.0'
+          php-version: '8.3'
 
       - name: Install dependencies
         run: composer install --ignore-platform-reqs
