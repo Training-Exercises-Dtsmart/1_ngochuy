@@ -4,7 +4,7 @@
 
   ** File Detail For Database Schema :
 
- +++ [orders.pdf](https://github.com/user-attachments/files/16345792/orders.pdf) ( Click To More Detail https://img.icons8.com/?size=100&id=23540&format=png&color=000000 )
+ +++ ( Click To More Detail ) [orders.pdf](https://github.com/user-attachments/files/16345792/orders.pdf) 
 
   
 <img width="1440" alt="Ảnh màn hình 2024-07-23 lúc 15 25 44" src="https://github.com/user-attachments/assets/baa4b460-0aaf-45a4-88e3-b4f1ef54578a">
