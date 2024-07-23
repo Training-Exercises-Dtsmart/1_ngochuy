@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<ruleset name="Yii2 Coding Standards">
+    <description>Yii2 Coding Standards for PHP_CodeSniffer</description>
+    <rule ref="vendor/yiisoft/yii2-coding-standards/Yii2" />
+</ruleset>

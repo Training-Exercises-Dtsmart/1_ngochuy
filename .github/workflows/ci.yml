@@ -2,7 +2,7 @@
  # @Author: RobertPham0327 s3926681@rmit.edu.vn
  # @Date: 2024-07-23 12:02:37
  # @LastEditors: RobertPham0327 s3926681@rmit.edu.vn
- # @LastEditTime: 2024-07-23 12:56:01
+ # @LastEditTime: 2024-07-23 14:07:10
  # @FilePath: .github/workflows/ci.yml
  # @Description: 这是默认设置,可以在设置》工具》File Description中进行配置
 ###
@@ -48,8 +48,11 @@ jobs:
       - name: Install dependencies
         run: composer install --ignore-platform-reqs
 
-#      - name: Run tests
-#        run: vendor/bin/phpunit
+      - name: Fix code style issues
+        run: vendor/bin/phpcbf --standard=phpcs.xml src/
+
+      - name: Run PHP CodeSniffer
+        run: vendor/bin/phpcs --standard=phpcs.xml src/
 
     
 
