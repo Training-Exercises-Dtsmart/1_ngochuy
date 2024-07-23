@@ -4,10 +4,11 @@
 
   ** File Detail For Database Schema :
 
-[orders.pdf](https://github.com/user-attachments/files/16345792/orders.pdf)
+ +++ [orders.pdf](https://github.com/user-attachments/files/16345792/orders.pdf) ( Click To More Detail https://img.icons8.com/?size=100&id=23540&format=png&color=000000 )
 
   
-![E-commerce schema_2024-07-10T03_52_33 165Z](https://github.com/Training-Exercises-Dtsmart/1_ngochuy/assets/145101998/ae32f1d1-4c5c-4db5-acee-5b719430983e)
+<img width="1440" alt="Ảnh màn hình 2024-07-23 lúc 15 25 44" src="https://github.com/user-attachments/assets/baa4b460-0aaf-45a4-88e3-b4f1ef54578a">
+
 
 
 - Migrations:
