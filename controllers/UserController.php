@@ -4,7 +4,6 @@ namespace app\controllers;
 
 use app\models\User;
 use modules\models\search\UserSearch;
-use Yii;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -130,6 +129,6 @@ class UserController extends Controller
             return $model;
         }
 
-        throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+        throw new NotFoundHttpException(\Yii::t('app', 'The requested page does not exist.'));
     }
 }
