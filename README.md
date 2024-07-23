@@ -1,6 +1,11 @@
 <img width="1057" alt="Ảnh màn hình 2024-07-19 lúc 14 17 57" src="https://github.com/user-attachments/assets/8031546d-8e67-45df-ba59-f4aebec6678e">*** Day 2: 
 
 - Schema database :
+
+  ** File Detail For Database Schema :
+
+[orders.pdf](https://github.com/user-attachments/files/16345792/orders.pdf)
+
   
 ![E-commerce schema_2024-07-10T03_52_33 165Z](https://github.com/Training-Exercises-Dtsmart/1_ngochuy/assets/145101998/ae32f1d1-4c5c-4db5-acee-5b719430983e)
 
