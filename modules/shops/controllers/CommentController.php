@@ -3,19 +3,20 @@
  * @Author: RobertPham0327 s3926681@rmit.edu.vn
  * @Date: 2024-07-19 10:13:35
  * @LastEditors: JustABusiness huysanti123456@gmail.com
- * @LastEditTime: 2024-07-24 16:11:19
+ * @LastEditTime: 2024-07-24 21:18:42
  * @FilePath: modules/shops/controllers/CommentController.php
  * @Description: 这是默认设置,可以在设置》工具》File Description中进行配置
  */
 
 namespace app\modules\shops\controllers;
 
+use Yii;
 use app\controllers\Controller;
 use app\modules\core\Pagination;
 use app\modules\enums\HttpStatus;
 use app\modules\shops\form\CommentForm;
 use app\modules\shops\models\Comment;
-use Yii;
+
 
 
 class CommentController extends Controller
@@ -50,7 +51,6 @@ class CommentController extends Controller
           }
 
           $dataProvider = Pagination::getPagination($comments, 10, SORT_DESC);
-
           return $this->json(true, ['comment' => $dataProvider], 'Success', HttpStatus::OK);
      }
 

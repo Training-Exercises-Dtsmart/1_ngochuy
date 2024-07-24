@@ -13,7 +13,7 @@ services:
       - php
   php:
     container_name: yii_php
-    build: ./images/php81fpm
+    build: docker/php81fpm
     volumes:
       - ./www:/var/www
       - ./php.ini:/usr/local/etc/php/conf.d/php.ini
