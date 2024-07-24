@@ -7,7 +7,7 @@ use Order;
 /**
  * This is the ActiveQuery class for [[Order]].
  *
- * @see Order
+ * @see \app\modules\shops\models\Order
  * @method Order[] all($db = null)
  * @method Order one($db = null)
  */

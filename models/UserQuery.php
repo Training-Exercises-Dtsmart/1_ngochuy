@@ -2,7 +2,7 @@
 
 namespace app\models;
 
-use User;
+use app\modules\users\models\User;
 
 /**
  * This is the ActiveQuery class for [[User]].

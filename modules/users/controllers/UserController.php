@@ -1,0 +1,124 @@
+<?php
+
+namespace app\modules\users\controllers;
+
+use app\controllers\Controller;
+use app\models\User;
+use app\modules\core\Pagination;
+use app\modules\enums\HttpStatus;
+use app\modules\users\forms\SignInForm;
+use app\modules\users\forms\SignupForm;
+use app\modules\users\forms\UserForm;
+use Yii;
+
+class UserController extends Controller
+{
+    public function actionIndex()
+    {
+        $user = User::find();
+        if (!$user) {
+            return $this->json(false, [], 'User not found', HttpStatus::NOT_FOUND);
+        }
+        $pageSize = Yii::$app->request->get('pageSize', 20);
+        $dataProvider = Pagination::getPagination($user, $pageSize, SORT_DESC);
+        return $this->json(true, ['data' => $dataProvider], 'success', HttpStatus::OK);
+    }
+
+    public function actionCreate()
+    {
+        $user = new UserForm();
+        $user->load(Yii::$app->request->post(), '');
+        if (!$user->validate() || !$user->save()) {
+            return $this->json(false, $user->getErrors(), 'User not saved', HttpStatus::NOT_FOUND);
+        }
+        return $this->json(true, ['data' => $user], 'success', HttpStatus::OK);
+    }
+
+    public function actionLogin()
+    {
+        $model = new SignInForm();
+        if ($model->load(Yii::$app->request->post(), '') && $model->login()) {
+            return $this->json(true, ['data' => $model->getUser()->toArray(['id', 'name', 'access_token'])], 'Login successful', HttpStatus::OK);
+        }
+
+        return $this->json(false, $model->errors, 'Login failed', HttpStatus::UNAUTHORIZED);
+    }
+
+    public function actionSignUp()
+    {
+        $model = new SignupForm();
+        if ($model->load(Yii::$app->request->post(), '') && $model->register()) {
+            return $this->json(true, ['data' => $model->_user], 'Created account successful', HttpStatus::OK);
+        }
+
+        return $this->json(false, $model->getErrors(), 'Created account failed', HttpStatus::CONFLICT);
+    }
+
+    public function actionLogout()
+    {
+        $user = Yii::$app->user->identity;
+
+        if ($user) {
+            $user->access_token = '';
+            if ($user->save(false)) {
+                Yii::$app->user->logout();
+                return $this->json(true, [], 'Logout successful', HttpStatus::OK);
+            }
+        }
+
+        return $this->json(false, [], 'Logout failed', HttpStatus::UNAUTHORIZED);
+    }
+
+     public function actionVerifyEmail($token)
+     {
+          if (empty($token) || !is_string($token)) {
+               return $this->json(false, [], 'Verification token cannot be blank.', HttpStatus::BAD_REQUEST);
+          }
+
+          $user = User::findByVerificationToken($token);
+          if (!$user) {
+               return $this->json(false, [], 'Invalid verification token.', HttpStatus::BAD_REQUEST);
+          }
+
+          $user->status = User::STATUS_ACTIVE; // Assuming you have a status attribute to activate the user
+          $user->verification_token = null;
+
+          if ($user->save(false)) {
+               return $this->json(true, ['data' => $user], 'Account verified successfully.', HttpStatus::OK);
+          }
+
+          return $this->json(false, [], 'Verification failed.', HttpStatus::BAD_REQUEST);
+     }
+
+     public function actionUpdateUser($id)
+     {
+        $model = $this->findModel($id);
+        $model->setAttribute('password', null);
+
+        if ($model->load(Yii::$app->request->post(), '') && $model->save()) {
+            return $this->json(true, ['data' => $model], 'User updated successfully', HttpStatus::OK);
+        }
+
+        return $this->json(false, $model->getErrors(), 'User not updated', HttpStatus::NOT_FOUND);
+     }
+
+     public function actionSendmail()
+     {
+          Yii::$app->mailer->compose()
+               ->setFrom('no-reply@domain.com')
+               ->setTo('huysanti123456@gmail.com')
+               ->setSubject('Xin chào')
+               ->setTextBody('Hello')
+               ->setHtmlBody('<b>HTML content</b>')
+               ->send();
+     }
+
+     protected function findModel($id)
+     {
+          if (($model = User::findOne($id)) !== null) {
+               return $model;
+          }
+
+         return $this->json(false, [], 'User not found', HttpStatus::NOT_FOUND);
+     }
+}
