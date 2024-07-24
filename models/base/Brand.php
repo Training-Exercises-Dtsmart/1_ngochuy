@@ -4,7 +4,7 @@
 
 namespace app\models\base;
 
-use app\models\BrandQuery;
+use app\models\query\BrandQuery;
 use yii\helpers\ArrayHelper;
 
 /**

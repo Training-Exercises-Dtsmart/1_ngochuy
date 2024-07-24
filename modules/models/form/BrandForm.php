@@ -17,4 +17,14 @@ class BrandForm extends Brand
             ]
         );
     }
+
+     public function saveBrand()
+     {
+          if ($this->validate()) {
+               $product = new \app\models\Brand();
+               $product->attributes = $this->attributes;
+               return $product->save();
+          }
+          return false;
+     }
 }
