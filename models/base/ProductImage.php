@@ -4,8 +4,9 @@
 
 namespace app\models\base;
 
-use app\models\ProductImageQuery;
+use Yii;
 use yii\helpers\ArrayHelper;
+use \app\models\ProductImageQuery;
 
 /**
  * This is the base-model class for table "product_images".

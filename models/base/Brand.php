@@ -4,8 +4,10 @@
 
 namespace app\models\base;
 
-use app\models\query\BrandQuery;
+use Yii;
 use yii\helpers\ArrayHelper;
+use yii\behaviors\TimestampBehavior;
+use \app\models\BrandQuery;
 
 /**
  * This is the base-model class for table "brands".
@@ -13,6 +15,8 @@ use yii\helpers\ArrayHelper;
  * @property integer $id
  * @property string $name
  * @property integer $status
+ * @property string $created_at
+ * @property string $updated_at
  */
 abstract class Brand extends \yii\db\ActiveRecord
 {
@@ -23,6 +27,20 @@ abstract class Brand extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return 'brands';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        $behaviors = parent::behaviors();
+        $behaviors['timestamp'] = [
+            'class' => TimestampBehavior::class,
+            'value' => (new \DateTime())->format('Y-m-d H:i:s'),
+                        ];
+        
+    return $behaviors;
     }
 
     /**
@@ -46,6 +64,8 @@ abstract class Brand extends \yii\db\ActiveRecord
             'id' => 'ID',
             'name' => 'Name',
             'status' => 'Status',
+            'created_at' => 'Created At',
+            'updated_at' => 'Updated At',
         ]);
     }
 

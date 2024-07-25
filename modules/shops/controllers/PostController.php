@@ -42,15 +42,6 @@ class PostController extends Controller
           return $this->json(false, ['errors' => $postForm->getErrors()], "Bad request", HttpStatus::BAD_REQUEST);
      }
 
-
-     public function actionView($id)
-     {
-          $post = Post::find()->where(["id" => $id])->one();
-
-          $post->load(Yii::$app->request->post());
-          return $this->json(true, ["post" => $post]);
-     }
-
      public function actionUpdate($id)
      {
           $post = Post::find()->where(['id' => $id])->one();

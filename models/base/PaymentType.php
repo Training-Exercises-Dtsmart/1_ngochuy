@@ -4,7 +4,8 @@
 
 namespace app\models\base;
 
-use app\models\PaymentTypeQuery;
+use app\models\query\PaymentTypeQuery;
+use yii\behaviors\TimestampBehavior;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -12,9 +13,15 @@ use yii\helpers\ArrayHelper;
  *
  * @property integer $id
  * @property string $name
- * @property string $description
+ * @property string $class
+ * @property string $params
  * @property string $logo
- * @property integer $status
+ * @property integer $commission
+ * @property integer $active
+ * @property integer $payment_available
+ * @property integer $sort
+ * @property integer $created_at
+ * @property integer $updated_at
  */
 abstract class PaymentType extends \yii\db\ActiveRecord
 {
@@ -30,12 +37,25 @@ abstract class PaymentType extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
+    public function behaviors()
+    {
+        $behaviors = parent::behaviors();
+        $behaviors['timestamp'] = [
+            'class' => TimestampBehavior::class,
+                        ];
+        
+    return $behaviors;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function rules()
     {
         $parentRules = parent::rules();
         return ArrayHelper::merge($parentRules, [
-            [['status'], 'integer'],
-            [['name', 'description', 'logo'], 'string', 'max' => 255]
+            [['commission', 'active', 'payment_available', 'sort'], 'integer'],
+            [['name', 'class', 'params', 'logo'], 'string', 'max' => 255]
         ]);
     }
 
@@ -47,9 +67,15 @@ abstract class PaymentType extends \yii\db\ActiveRecord
         return ArrayHelper::merge(parent::attributeLabels(), [
             'id' => 'ID',
             'name' => 'Name',
-            'description' => 'Description',
+            'class' => 'Class',
+            'params' => 'Params',
             'logo' => 'Logo',
-            'status' => 'Status',
+            'commission' => 'Commission',
+            'active' => 'Active',
+            'payment_available' => 'Payment Available',
+            'sort' => 'Sort',
+            'created_at' => 'Created At',
+            'updated_at' => 'Updated At',
         ]);
     }
 

@@ -25,7 +25,7 @@ class PostForm extends Post
           $avatarFile = UploadedFile::getInstanceByName('image');
 
           if ($avatarFile) {
-               $uploadPath = Yii::getAlias('@app/modules/models/upload/');
+               $uploadPath = Yii::getAlias('@app/web/assets/upload/');
                $filename = uniqid() . '.' . $avatarFile->extension;
                $filePath = $uploadPath . $filename;
 
@@ -46,7 +46,7 @@ class PostForm extends Post
           $uploadedFiles = [];
 
           if ($postFiles) {
-               $uploadPath = Yii::getAlias('@app/modules/models/upload/');
+               $uploadPath = Yii::getAlias('@app/web/assets/upload/');
 
                foreach ($postFiles as $file) {
                     $filename = uniqid() . '.' . $file->extension;
