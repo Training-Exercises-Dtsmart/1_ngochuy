@@ -92,9 +92,17 @@ $config = [
                'class' => 'yii\base\Module',
                'modules' => [
                     'v1' => [
-                         'class' => 'app\modules\Module'
-                    ]
-               ]
+                         'class' => 'app\modules\api\modules\v1\Module',
+                         'modules' => [
+                              'users' => [
+                                   'class' => 'app\modules\users\Module',
+                              ],
+                              'shops' => [
+                                   'class' => 'app\modules\shops\Module',
+                              ],
+                         ],
+                    ],
+               ],
           ],
           'admin' => [
                'class' => 'mdm\admin\Module',
