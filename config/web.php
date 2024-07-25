@@ -26,9 +26,16 @@ $config = [
           // 'parsers' => [
           //     'application/json' => 'yii\web\JsonParser',
           // ],
+          'redis' => [
+               'class' => 'yii\redis\Connection',
+               'hostname' => 'localhost',
+               'port' => 6379,
+               'database' => 0,
+          ],
           'cache' => [
-               'class' => 'yii\caching\FileCache',
+//               'class' => 'yii\caching\FileCache',
 //               'class' => 'yii\caching\AppCache',
+               'class' => 'yii\redis\Cache',
                'keyPrefix' => 'myapp'
           ],
           'user' => [

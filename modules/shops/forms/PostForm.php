@@ -1,6 +1,6 @@
 <?php
 
-namespace app\modules\shops\form;
+namespace app\modules\shops\forms;
 
 use app\models\Post;
 use Yii;

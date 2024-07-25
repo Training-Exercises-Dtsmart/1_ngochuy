@@ -5,7 +5,7 @@ namespace app\modules\shops\controllers;
 use app\controllers\Controller;
 use app\modules\core\Pagination;
 use app\modules\enums\HttpStatus;
-use app\modules\shops\form\OrderForm;
+use app\modules\shops\forms\OrderForm;
 use app\modules\shops\models\Order;
 use app\modules\shops\search\OrderSearch;
 use app\modules\users\models\User;

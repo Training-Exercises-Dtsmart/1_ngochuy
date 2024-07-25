@@ -8,7 +8,7 @@ use Yii;
 use yii\helpers\ArrayHelper;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
-use \app\models\ProductQuery;
+use \app\models\query\ProductQuery;
 
 /**
  * This is the base-model class for table "products".

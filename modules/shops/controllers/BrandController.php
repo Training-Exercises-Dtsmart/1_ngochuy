@@ -5,7 +5,7 @@ namespace app\modules\shops\controllers;
 use app\controllers\Controller;
 use app\modules\core\Pagination;
 use app\modules\enums\HttpStatus;
-use app\modules\shops\form\BrandForm;
+use app\modules\shops\forms\BrandForm;
 use app\modules\shops\models\Brand as ModelsBrand;
 use Yii;
 

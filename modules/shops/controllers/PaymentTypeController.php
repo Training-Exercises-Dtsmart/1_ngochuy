@@ -3,7 +3,7 @@
  * @Author: JustABusiness huysanti123456@gmail.com
  * @Date: 2024-07-25 15:55:55
  * @LastEditors: JustABusiness huysanti123456@gmail.com
- * @LastEditTime: 2024-07-25 16:33:24
+ * @LastEditTime: 2024-07-25 17:09:09
  * @FilePath: modules/shops/controllers/PaymentTypeController.php
  * @Description: 这是默认设置,可以在设置》工具》File Description中进行配置
  */
@@ -12,7 +12,7 @@
 namespace app\modules\shops\controllers;
 
 use app\modules\enums\HttpStatus;
-use app\modules\shops\form\PaymentTypeForm;
+use app\modules\shops\forms\PaymentTypeForm;
 use app\modules\shops\models\PaymentType;
 use app\modules\shops\search\PaymentTypeSearch;
 use Yii;
@@ -30,7 +30,7 @@ class PaymentTypeController extends Controller
 
      public function actionIndex()
      {
-          $key = "payment_types-list";
+          $key = "payment_type-list";
           $payment_types = Yii::$app->cache->get($key);
           if (!$payment_types) {
                $searchModel = new PaymentTypeSearch();
@@ -42,10 +42,8 @@ class PaymentTypeController extends Controller
 
      public function actionCreate()
      {
-          $user = Yii::$app->user->identity;
           $paymentTypeForm = new PaymentTypeForm();
           $paymentTypeForm->load(Yii::$app->request->post());
-//          $postForm->user_id = $user->id;
 
           if (!$paymentTypeForm->validate() || !$paymentTypeForm->save()) {
                return $this->json(false, ["errors" => $paymentTypeForm->getErrors()], "Can't create new payment type", HttpStatus::BAD_REQUEST);
@@ -93,11 +91,8 @@ class PaymentTypeController extends Controller
                return $this->json(false, [], "Payment type not found", HttpStatus::NOT_FOUND);
           }
           $post->save();
-//        if (!$post->delete()) {
-//            return $this->json(false, ['errors' => $post->getErrors()], "Can't delete post", HTTP_STATUS::BAD_REQUEST);
-//        }
-
-          return $this->json(true, [], 'Delete  successfully');
+          
+          return $this->json(true, [], 'Delete  successfully', HttpStatus::OK);
      }
 
      public function actionSearch()

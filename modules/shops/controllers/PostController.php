@@ -6,7 +6,7 @@ namespace app\modules\shops\controllers;
 use app\controllers\Controller;
 use app\modules\core\Pagination;
 use app\modules\enums\HttpStatus;
-use app\modules\shops\form\PostForm;
+use app\modules\shops\forms\PostForm;
 use app\modules\shops\models\AddToPost;
 use app\modules\shops\models\Post;
 use app\modules\shops\search\PostSearch;

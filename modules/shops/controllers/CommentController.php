@@ -3,7 +3,7 @@
  * @Author: RobertPham0327 s3926681@rmit.edu.vn
  * @Date: 2024-07-19 10:13:35
  * @LastEditors: JustABusiness huysanti123456@gmail.com
- * @LastEditTime: 2024-07-24 21:18:42
+ * @LastEditTime: 2024-07-25 16:46:25
  * @FilePath: modules/shops/controllers/CommentController.php
  * @Description: 这是默认设置,可以在设置》工具》File Description中进行配置
  */
@@ -14,7 +14,7 @@ use Yii;
 use app\controllers\Controller;
 use app\modules\core\Pagination;
 use app\modules\enums\HttpStatus;
-use app\modules\shops\form\CommentForm;
+use app\modules\shops\forms\CommentForm;
 use app\modules\shops\models\Comment;
 
 
