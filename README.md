@@ -114,6 +114,12 @@ https://documenter.getpostman.com/view/30812144/2sA3kXG25H
 *** Week 3: 
 
 - Crete Docker and Setup Nginx and run nginx inside docker :
+  
+![1_MLFxdoY6ImiTghX9l0lDTA](https://github.com/user-attachments/assets/165ef825-374e-40b7-ba33-070fd5856692)  |  ![images](https://github.com/user-attachments/assets/0ca58288-ace0-4242-a5ba-d45e85c2303d)
+
+
+  
+  
 
 <img width="981" alt="Ảnh màn hình 2024-07-17 lúc 16 39 26" src="https://github.com/user-attachments/assets/d55a8a02-779f-4e00-b05f-7db719f32a8f">
 
