@@ -3,6 +3,24 @@
 https://documenter.getpostman.com/view/30812144/2sA3kXG25H
 
 
+# Config Redis & Yii2 
+
+<img width="694" alt="Ảnh màn hình 2024-07-25 lúc 17 12 33" src="https://github.com/user-attachments/assets/c7aef720-9d6a-4d2d-9baf-c7244067c179">
+
++ Config Redis :
+  
+<img width="689" alt="Ảnh màn hình 2024-07-25 lúc 17 11 00" src="https://github.com/user-attachments/assets/39762cc1-7a4f-4251-9b82-78f1b4aa4a6c">
+
++ Defined get cache :
+  
+<img width="809" alt="Ảnh màn hình 2024-07-25 lúc 17 09 37" src="https://github.com/user-attachments/assets/d89b9686-f29a-4e30-ba00-a22117384726">
+
++ Login Redis cli to get keys:
+
+<img width="455" alt="Ảnh màn hình 2024-07-25 lúc 17 09 28" src="https://github.com/user-attachments/assets/d80e4f9f-e711-43af-a5d3-2121935a5125">
+
+
+
 ** Download Postman Collection Json : 
 
 
