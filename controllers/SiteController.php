@@ -132,4 +132,16 @@ class SiteController extends Controller
     {
         return $this->render('about');
     }
+
+    public function actionEntry()
+    {
+         $model = new EntryForm();
+         if ($model->load(Yii::$app->request->post()) && ($model->save()))
+         {
+              return $this->redirect(['view', 'id']);
+         } else
+         {
+              return $this->render('entry', ['model' => $model]);
+         }
+    }
 }

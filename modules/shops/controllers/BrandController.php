@@ -60,8 +60,6 @@ class BrandController extends Controller
                return $this->json(false, [], "Brand not found", HttpStatus::NOT_FOUND);
           }
 
-          $brand->load(Yii::$app->request->post(), '');
-
           if (!$brand->delete()) {
                return $this->json(false, ['errors' => $brand->getErrors()], "Can't delete product", HttpStatus::BAD_REQUEST);
           }

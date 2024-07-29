@@ -3,7 +3,7 @@
  * @Author: RobertPham0327 s3926681@rmit.edu.vn
  * @Date: 2024-07-19 10:13:35
  * @LastEditors: JustABusiness huysanti123456@gmail.com
- * @LastEditTime: 2024-07-25 16:46:25
+ * @LastEditTime: 2024-07-29 15:48:07
  * @FilePath: modules/shops/controllers/CommentController.php
  * @Description: 这是默认设置,可以在设置》工具》File Description中进行配置
  */
@@ -16,7 +16,6 @@ use app\modules\core\Pagination;
 use app\modules\enums\HttpStatus;
 use app\modules\shops\forms\CommentForm;
 use app\modules\shops\models\Comment;
-
 
 
 class CommentController extends Controller
@@ -45,13 +44,17 @@ class CommentController extends Controller
       */
      public function actionIndex()
      {
-          $comments = Comment::find();
-          if (!$comments) {
-               return $this->json(false, [], 'Order not found', HttpStatus::NOT_FOUND);
-          }
+          try {
+               $comments = Comment::find();
+               if (!$comments) {
+                    return $this->json(false, [], 'Comment not found', HttpStatus::NOT_FOUND);
+               }
 
-          $dataProvider = Pagination::getPagination($comments, 10, SORT_DESC);
-          return $this->json(true, ['comment' => $dataProvider], 'Success', HttpStatus::OK);
+               $dataProvider = Pagination::getPagination($comments, 10, SORT_DESC);
+               return $this->json(true, ['comment' => $dataProvider], 'Success', HttpStatus::OK);
+          } catch (\Exception $e) {
+               return $this->json(false, [], 'Can not find comment', HttpStatus::BAD_REQUEST);
+          }
      }
 
 
@@ -85,55 +88,72 @@ class CommentController extends Controller
           }
 
           return $this->json(true, ['comment' => $comment], 'Reply to comment successfully', HttpStatus::OK);
-     } 
-     
+     }
+
      public function actionUpdate($id)
      {
-          $comment = CommentForm::findOne($id);
-          if($comment == null)
-          {
-               return $this->json(false, [], "Order not found", HttpStatus::NOT_FOUND);
-          }
+          $transaction = Yii::$app->db->beginTransaction();
+          try {
+               $comment = CommentForm::findOne($id);
+               if ($comment === null) {
+                    return $this->json(false, [], 'Comment not found', HttpStatus::NOT_FOUND);
+               }
 
-          $comment->load(Yii::$app->request->post(), '');
-          if (!$comment->validate() || !$comment->save()) {
-               return $this->json(false, ['errors' => $comment->getErrors()], "Can't update comment", HttpStatus::BAD_REQUEST);
-          }
+               $comment->load(Yii::$app->request->post(), '');
+               if ($comment->validate() || $comment->save()) {
+                    return $this->json(false, ['errors' => $comment->getErrors()], "Can't update comment", HttpStatus::BAD_REQUEST);
+               }
 
-          return $this->json(true, ['order' => $comment], 'Update comment successfully', HttpStatus::OK);
+               return $this->jsons(true, ['comment' => $comment], 'Update comment successfully', HttpStatus::OK);
+          } catch (\Exception $e) {
+               $transaction->rollBack();
+               return $this->json(false, [], 'Can not update comment', HttpStatus::BAD_REQUEST);
+          }
      }
 
 
      public function actionDelete($id)
      {
-          $comment  = Comment::find()->where(['id' => $id])->one();
-          if ($comment == null) {
-               return $this->json(false, [], 'Comment not found', HttpStatus::NOT_FOUND);
+          $transaction = Yii::$app->db->beginTransaction();
+          try {
+               $comment = Comment::findOne($id);
+               if ($comment == null) {
+                    return $this->json(false, [], 'Comment not found', HttpStatus::NOT_FOUND);
+               }
+
+               if (!$comment->delete()) {
+                    $transaction->rollBack();
+                    return $this->json(false, ['errors' => $comment->getErrors()], "Can't delete comment", HttpStatus::BAD_REQUEST);
+               }
+
+               $transaction->commit();
+               return $this->json(true, [], 'Delete comment successfully', HttpStatus::OK);
+          } catch (\Exception $e) {
+               $transaction->rollBack();
+               return $this->json(false, [], 'Can not delete comment', HttpStatus::BAD_REQUEST);
           }
-          
-          $comment->load(Yii::$app->request->post(), '');
-          if (!$comment->delete()) {
-               return $this->json(false, ['errors' => $comment->getErrors()], "Can't delete order", HttpStatus::BAD_REQUEST);
-          }
-          return $this->json(true, 'Success', HttpStatus::OK);
      }
 
 
      protected function findModel($id)
      {
-          if (($model = Comment::findOne(['id' => $id])) !== null) {
-               return $model;
+          $transaction = Yii::$app->db->beginTransaction();
+          try {
+               if (($model = Comment::findOne($id)) !== null) {
+                    return $model;
+               }
+          } catch (\Exception $e) {
+               $transaction->rollBack();
+               return $this->json(false, [], 'Can not find comment', HttpStatus::BAD_REQUEST);
           }
-
-          return $this->json(false, [], 'Model not found', HttpStatus::NOT_FOUND);
      }
-     
+
      protected function findParentId($parentId)
      {
-          if (($model = Comment::findOne(['parent_id' => $parentId]))!== null) {
+          if (($model = Comment::findOne(['parent_id' => $parentId])) !== null) {
                return $model->parent_id;
           }
-     
+
           return $this->json(false, [], 'Model not found', HttpStatus::NOT_FOUND);
      }
 }

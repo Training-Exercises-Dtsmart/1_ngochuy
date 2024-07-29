@@ -59,7 +59,7 @@ class PostController extends Controller
           if (empty($post)) {
                return $this->json(false, [], "Post not found", HttpStatus::NOT_FOUND);
           }
-          $post->load(Yii::$app->request->post());
+
           if (!$post->delete()) {
                return $this->json(false, ['errors' => $post->getErrors()], "Can't delete post", HttpStatus::BAD_REQUEST);
           }

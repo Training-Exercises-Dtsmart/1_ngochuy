@@ -33,7 +33,7 @@ tests/_support/_generated
 /.vagrant
 
 #env file
-.env
+/.env
 
 #runtime file
 /runtime

@@ -79,8 +79,6 @@ class ProductController extends Controller
                return $this->json(false, [], "Product not found", HttpStatus::NOT_FOUND);
           }
 
-          $product->load(Yii::$app->request->post());
-
           if (!$product->delete()) {
                return $this->json(false, ['errors' => $product->getErrors()], "Can't delete product", HttpStatus::BAD_REQUEST);
           }

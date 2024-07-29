@@ -148,7 +148,7 @@ class OrderController extends Controller
           if ($order == null) {
                return $this->json(false, [], "Order not found", HttpStatus::NOT_FOUND);
           }
-          $order->load(Yii::$app->request->post(), '');
+
           if (!$order->delete()) {
                return $this->json(false, ['errors' => $order->getErrors()], "Can't delete order", HttpStatus::BAD_REQUEST);
           }
