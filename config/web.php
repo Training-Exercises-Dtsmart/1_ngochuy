@@ -143,8 +143,20 @@ $config = [
                'app\services\BrandService' => [
                     'class' => 'app\services\BrandService',
                ],
+               'app\services\CommentService' => [
+                    'class' => 'app\services\CommentService',
+               ],
+               'app\services\OrderService' => [
+                    'class' => 'app\services\OrderService',
+               ],
+               'app\repositories\CommentRepository' => [
+                    'class' => 'app\repositories\CommentRepository',
+               ],
                'app\repositories\BrandRepository' => [
                     'class' => 'app\repositories\BrandRepository',
+               ],
+               'app\repositories\OrderRepository' => [
+                    'class' => 'app\repositories\OrderRepository',
                ],
           ],
      ],

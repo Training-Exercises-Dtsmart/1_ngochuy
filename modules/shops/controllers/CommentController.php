@@ -3,7 +3,7 @@
  * @Author: RobertPham0327 s3926681@rmit.edu.vn
  * @Date: 2024-07-19 10:13:35
  * @LastEditors: JustABusiness huysanti123456@gmail.com
- * @LastEditTime: 2024-07-29 15:48:07
+ * @LastEditTime: 2024-07-31 16:50:52
  * @FilePath: modules/shops/controllers/CommentController.php
  * @Description: 这是默认设置,可以在设置》工具》File Description中进行配置
  */
@@ -11,11 +11,14 @@
 namespace app\modules\shops\controllers;
 
 use Yii;
+use app\components\CustomSerializer;
 use app\controllers\Controller;
-use app\modules\core\Pagination;
 use app\modules\enums\HttpStatus;
 use app\modules\shops\forms\CommentForm;
 use app\modules\shops\models\Comment;
+use app\services\CommentService;
+use app\repositories\CommentRepository;
+use app\components\RateLimitBehavior;
 
 
 class CommentController extends Controller
@@ -37,6 +40,38 @@ class CommentController extends Controller
 //          ];
 //     }
 
+     public $modelClass = 'app\models\Comment';
+
+     public $serializer = [
+          'class' => CustomSerializer::class,
+          'collectionEnvelope' => 'items',
+     ];
+
+     private $commentService;
+
+     private $commentRepository;
+
+     public function __construct($id, $module, CommentService $commentService, CommentRepository $commentRepository, $config = [])
+     {
+          $this->commentService = $commentService;
+          $this->commentRepository = $commentRepository;
+          parent::__construct($id, $module, $config);
+     }
+
+     public function behaviors()
+     {
+          $behaviors = parent::behaviors();
+
+          if (in_array($this->action->id, ['index', 'create', 'update', 'delete'])) {
+               $behaviors['rateLimiter'] = [
+                    'class' => RateLimitBehavior::class,
+                    'enableRateLimitHeaders' => true,
+               ];
+          }
+          return $behaviors;
+     }
+
+
      /**
       * Lists all Comment models.
       *
@@ -45,29 +80,32 @@ class CommentController extends Controller
      public function actionIndex()
      {
           try {
-               $comments = Comment::find();
-               if (!$comments) {
-                    return $this->json(false, [], 'Comment not found', HttpStatus::NOT_FOUND);
-               }
-
-               $dataProvider = Pagination::getPagination($comments, 10, SORT_DESC);
-               return $this->json(true, ['comment' => $dataProvider], 'Success', HttpStatus::OK);
+               $comments = $this->commentService->getAllComments(Yii::$app->request->queryParams);
+               return $this->json(true, ["comments" => $comments], "Success", HttpStatus::OK);
           } catch (\Exception $e) {
-               return $this->json(false, [], 'Can not find comment', HttpStatus::BAD_REQUEST);
+               Yii::error('Error in actionIndex: ' . $e->getMessage(), __METHOD__);
+               return $this->json(false, ['errors' => $e->getMessage()], 'Internal Server Error', HttpStatus::INTERNAL_SERVER_ERROR);
           }
      }
 
 
      public function actionCreate()
      {
-          $comment = new CommentForm();
-          $comment->load(Yii::$app->request->post(), '');
-
-          if (!$comment->validate() || !$comment->save()) {
-               return $this->json(false, ["errors" => $comment->getErrors()], "Can't create comment", HttpStatus::BAD_REQUEST);
+          $transaction = Yii::$app->db->beginTransaction();
+          try {
+               $commentForm = new CommentForm();
+               $commentForm->load(Yii::$app->request->post(), '');
+               if (!$commentForm->validate() || !$commentForm->save()) {
+                    return $this->json(false, ['errors' => $commentForm->getErrors()], "Bad request", HttpStatus::BAD_REQUEST);
+               }
+               $this->commentService->clearCommentCache();
+               $transaction->commit();
+               return $this->json(true, ["comment" => $commentForm], "Create comment successfully", HttpStatus::OK);
+          } catch (\Exception $e) {
+               $transaction->rollBack();
+               Yii::error('Error in actionCreate: ' . $e->getMessage(), __METHOD__);
+               return $this->json(false, ['errors' => $e->getMessage()], 'Internal Server Error', HttpStatus::INTERNAL_SERVER_ERROR);
           }
-
-          return $this->json(true, ["comment" => $comment], "Create comment successfully", HttpStatus::OK);
      }
 
      public function actionReply()
@@ -94,20 +132,22 @@ class CommentController extends Controller
      {
           $transaction = Yii::$app->db->beginTransaction();
           try {
-               $comment = CommentForm::findOne($id);
-               if ($comment === null) {
+               $commentForm = CommentForm::find()->where(['id' => $id])->one();
+               if (!$commentForm) {
                     return $this->json(false, [], 'Comment not found', HttpStatus::NOT_FOUND);
                }
-
-               $comment->load(Yii::$app->request->post(), '');
-               if ($comment->validate() || $comment->save()) {
-                    return $this->json(false, ['errors' => $comment->getErrors()], "Can't update comment", HttpStatus::BAD_REQUEST);
+               $commentForm->load(Yii::$app->request->post(), '');
+               if ($commentForm->validate() && $commentForm->save()) {
+                    $this->commentService->clearCommentCache();
+                    return $this->json(true, ['comment' => $commentForm], 'Update comment successfully');
                }
 
-               return $this->jsons(true, ['comment' => $comment], 'Update comment successfully', HttpStatus::OK);
+               $transaction->commit();
+               return $this->json(false, ['errors' => $commentForm->getErrors()], "Can't update comment", HttpStatus::BAD_REQUEST);
           } catch (\Exception $e) {
                $transaction->rollBack();
-               return $this->json(false, [], 'Can not update comment', HttpStatus::BAD_REQUEST);
+               Yii::error('Error in actionUpdate: ' . $e->getMessage(), __METHOD__);
+               return $this->json(false, ['errors' => $e->getMessage()], 'Internal Server Error', HttpStatus::INTERNAL_SERVER_ERROR);
           }
      }
 
@@ -116,35 +156,34 @@ class CommentController extends Controller
      {
           $transaction = Yii::$app->db->beginTransaction();
           try {
-               $comment = Comment::findOne($id);
-               if ($comment == null) {
-                    return $this->json(false, [], 'Comment not found', HttpStatus::NOT_FOUND);
+               $comment = $this->commentRepository->findOne($id);
+               if (empty($comment)) {
+                    return $this->json(false, [], "Comment not found", HttpStatus::NOT_FOUND);
                }
-
-               if (!$comment->delete()) {
-                    $transaction->rollBack();
+               if (!$this->commentRepository->delete($comment)) {
                     return $this->json(false, ['errors' => $comment->getErrors()], "Can't delete comment", HttpStatus::BAD_REQUEST);
                }
-
+               $this->commentService->clearCommentCache();
                $transaction->commit();
                return $this->json(true, [], 'Delete comment successfully', HttpStatus::OK);
           } catch (\Exception $e) {
                $transaction->rollBack();
-               return $this->json(false, [], 'Can not delete comment', HttpStatus::BAD_REQUEST);
+               Yii::error('Error in actionDelete: ' . $e->getMessage(), __METHOD__);
+               return $this->json(false, ['errors' => $e->getMessage()], 'Internal Server Error', HttpStatus::INTERNAL_SERVER_ERROR);
           }
      }
 
 
      protected function findModel($id)
      {
-          $transaction = Yii::$app->db->beginTransaction();
           try {
-               if (($model = Comment::findOne($id)) !== null) {
-                    return $model;
+               if (($model = $this->commentRepository->findOne($id)) !== null) {
+                    return $this->json(true, ['data' => $model], 'Success', HttpStatus::OK);
                }
+               return $this->json(false, [], 'The requested page does not exist.', HttpStatus::NOT_FOUND);
           } catch (\Exception $e) {
-               $transaction->rollBack();
-               return $this->json(false, [], 'Can not find comment', HttpStatus::BAD_REQUEST);
+               Yii::error('Error in findModel: ' . $e->getMessage(), __METHOD__);
+               return $this->json(false, ['errors' => $e->getMessage()], 'Internal Server Error', HttpStatus::INTERNAL_SERVER_ERROR);
           }
      }
 

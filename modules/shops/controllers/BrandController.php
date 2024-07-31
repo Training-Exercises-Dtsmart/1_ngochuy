@@ -2,29 +2,30 @@
 
 namespace app\modules\shops\controllers;
 
-use Yii;
+use app\components\CustomSerializer;
+use app\components\RateLimitBehavior;
 use app\controllers\Controller;
 use app\modules\enums\HttpStatus;
 use app\modules\shops\forms\BrandForm;
-use app\components\CustomSerializer;
-use app\services\BrandService;
 use app\repositories\BrandRepository;
-use app\components\RateLimitBehavior;
+use app\services\BrandService;
+use Yii;
 
 /**
  * BrandController implements the CRUD actions for Brand model.
  */
 class BrandController extends Controller
 {
+     public $modelClass = 'app\models\Brand';
+
      public $serializer = [
           'class' => CustomSerializer::class,
           'collectionEnvelope' => 'items',
      ];
-
-     public $modelClass = 'app\models\Brand';
      private $brandService;
 
      private $brandRepository;
+
      public function __construct($id, $module, BrandService $brandService, BrandRepository $brandRepository, $config = [])
      {
           $this->brandService = $brandService;
@@ -36,7 +37,7 @@ class BrandController extends Controller
      {
           $behaviors = parent::behaviors();
 
-          if (in_array($this->action->id, ['index','create', 'update', 'delete'])) {
+          if (in_array($this->action->id, ['index', 'create', 'update', 'delete'])) {
                $behaviors['rateLimiter'] = [
                     'class' => RateLimitBehavior::class,
                     'enableRateLimitHeaders' => true,
@@ -58,6 +59,7 @@ class BrandController extends Controller
 
      public function actionCreate()
      {
+          $transaction = Yii::$app->db->beginTransaction();
           try {
                $brandForm = new BrandForm();
                $brandForm->load(Yii::$app->request->post(), '');
@@ -65,8 +67,10 @@ class BrandController extends Controller
                     return $this->json(false, ['errors' => $brandForm->getErrors()], "Bad request", HttpStatus::BAD_REQUEST);
                }
                $this->brandService->clearBrandCache();
-               return $this->json(true, ["product" => $brandForm], "Create brand successfully", HttpStatus::OK);
+               $transaction->commit();
+               return $this->json(true, ["brand" => $brandForm], "Create brand successfully", HttpStatus::OK);
           } catch (\Exception $e) {
+               $transaction->rollBack();
                Yii::error('Error in actionCreate: ' . $e->getMessage(), __METHOD__);
                return $this->json(false, ['errors' => $e->getMessage()], 'Internal Server Error', HttpStatus::INTERNAL_SERVER_ERROR);
           }
@@ -74,18 +78,21 @@ class BrandController extends Controller
 
      public function actionUpdate($id)
      {
+          $transaction = Yii::$app->db->beginTransaction();
           try {
                $brandForm = BrandForm::find()->where(['id' => $id])->one();
                if (!$brandForm) {
                     return $this->json(false, [], 'Brand not found', HttpStatus::NOT_FOUND);
                }
-               $brandForm->load(Yii::$app->request->post());
+               $brandForm->load(Yii::$app->request->post(), '');
                if ($brandForm->validate() && $brandForm->save()) {
                     $this->brandService->clearBrandCache();
                     return $this->json(true, ['brand' => $brandForm], 'Update brand successfully');
                }
+               $transaction->commit();
                return $this->json(false, ['errors' => $brandForm->getErrors()], "Can't update brand", HttpStatus::BAD_REQUEST);
           } catch (\Exception $e) {
+               $transaction->rollBack();
                Yii::error('Error in actionUpdate: ' . $e->getMessage(), __METHOD__);
                return $this->json(false, ['errors' => $e->getMessage()], 'Internal Server Error', HttpStatus::INTERNAL_SERVER_ERROR);
           }
@@ -93,6 +100,7 @@ class BrandController extends Controller
 
      public function actionDelete($id)
      {
+          $transaction = Yii::$app->db->beginTransaction();
           try {
                $brand = $this->brandRepository->findOne($id);
                if (empty($brand)) {
@@ -102,8 +110,10 @@ class BrandController extends Controller
                     return $this->json(false, ['errors' => $brand->getErrors()], "Can't delete product", HttpStatus::BAD_REQUEST);
                }
                $this->brandService->clearBrandCache();
+               $transaction->commit();
                return $this->json(true, [], 'Delete brand successfully', HttpStatus::OK);
           } catch (\Exception $e) {
+               $transaction->rollBack();
                Yii::error('Error in actionDelete: ' . $e->getMessage(), __METHOD__);
                return $this->json(false, ['errors' => $e->getMessage()], 'Internal Server Error', HttpStatus::INTERNAL_SERVER_ERROR);
           }

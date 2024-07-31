@@ -3,14 +3,16 @@
 namespace app\modules\shops\controllers;
 
 use Yii;
+use app\components\CustomSerializer;
+use app\components\RateLimitBehavior;
 use app\controllers\Controller;
-use app\modules\core\Pagination;
 use app\modules\enums\HttpStatus;
 use app\modules\shops\forms\OrderForm;
-use app\modules\shops\models\Order;
 use app\modules\shops\search\OrderSearch;
 use app\modules\users\models\User;
 use yii\web\UnauthorizedHttpException;
+use app\services\OrderService;
+use app\repositories\OrderRepository;
 
 
 /**
@@ -58,21 +60,45 @@ class OrderController extends Controller
           return false;
      }
 
+     public $modelClass = 'app\models\Order';
+
+     public $serializer = [
+          'class' => CustomSerializer::class,
+          'collectionEnvelope' => 'items',
+     ];
+
+     private $orderService;
+
+     private $orderRepository;
+
+     public function __construct($id, $module, OrderService $orderService, OrderRepository $orderRepository, $config = [])
+     {
+          $this->orderService = $orderService;
+          $this->orderRepository = $orderRepository;
+          parent::__construct($id, $module, $config);
+     }
+
+     public function behaviors()
+     {
+          $behaviors = parent::behaviors();
+
+          if (in_array($this->action->id, ['index', 'create', 'update', 'delete'])) {
+               $behaviors['rateLimiter'] = [
+                    'class' => RateLimitBehavior::class,
+                    'enableRateLimitHeaders' => true,
+               ];
+          }
+          return $behaviors;
+     }
+
      public function actionIndex()
      {
-          $transaction = Yii::$app->db->beginTransaction();
           try {
-               $order = Order::find();
-               if (!$order) {
-                    return $this->json(false, [], 'Order not found', HttpStatus::NOT_FOUND);
-               }
-
-               $dataProvider = Pagination::getPagination($order, 10, SORT_DESC);
-               return $this->json(true, ['order' => $dataProvider], 'Success', HttpStatus::OK);
-               $transaction->commit();
+               $orders = $this->orderService->getAllOrders(Yii::$app->request->queryParams);
+               return $this->json(true, ["orders" => $orders], "Success", HttpStatus::OK);
           } catch (\Exception $e) {
-               $transaction->rollBack();
-               return $this->json(false, ['error' => $e->getErrors()], 'Can not find order', HttpStatus::BAD_REQUEST);
+               Yii::error('Error in actionIndex: ' . $e->getMessage(), __METHOD__);
+               return $this->json(false, ['errors' => $e->getMessage()], 'Internal Server Error', HttpStatus::INTERNAL_SERVER_ERROR);
           }
      }
 
@@ -82,43 +108,59 @@ class OrderController extends Controller
           $dataProvider = $modelSearch->search(Yii::$app->request->getQueryParams());
 
           if ($dataProvider->getCount() == 0) {
-               return $this->json(false, [], "Not found", HttpStatus::NOT_FOUND);
+               return $this->json(false, [], "Order not found", HttpStatus::NOT_FOUND);
           }
-          return $this->json(true, ["products" => $dataProvider->getModels()], "Find successfully", HttpStatus::OK);
+          return $this->json(true, ["orders" => $dataProvider->getModels()], "Find successfully", HttpStatus::OK);
      }
 
      public function actionCreate()
      {
-          $orderForm = new OrderForm();
-          $orderForm->load(Yii::$app->request->post(), '');
+          $transaction = Yii::$app->db->beginTransaction();
+          try {
+               $orderForm = new OrderForm();
+               $orderForm->load(Yii::$app->request->post(), '');
 
-          if (!$orderForm->validate() || !$orderForm->save()) {
-               return $this->json(false, ["errors" => $orderForm->getErrors()], "Can't create new product", HttpStatus::BAD_REQUEST);
-          }
-
-          if ($orderForm->save()) {
-               if ($orderForm->sendEmailToVendor()) {
-                    Yii::error("Email to the vendor is not sent");
-               } else if ($orderForm->sendEmailToCustomer()) {
-                    Yii::error("Email to the customer is not sent");
+               if (!$orderForm->validate() || !$orderForm->save()) {
+                    return $this->json(false, ["errors" => $orderForm->getErrors()], "Can't create new order", HttpStatus::BAD_REQUEST);
                }
+
+               if ($orderForm->save()) {
+                    if ($orderForm->sendEmailToVendor()) {
+                         Yii::error("Email to the vendor is not sent");
+                    } else if ($orderForm->sendEmailToCustomer()) {
+                         Yii::error("Email to the customer is not sent");
+                    }
+               }
+               $this->orderService->clearOrderCache();
+               $transaction->commit();
+               return $this->json(true, ["order" => $orderForm], "Create order successfully", HttpStatus::OK);
+          } catch (\Exception $e) {
+               $transaction->rollBack();
+               Yii::error('Error in actionCreate: ' . $e->getMessage(), __METHOD__);
+               return $this->json(false, ['errors' => $e->getMessage()], 'Internal Server Error', HttpStatus::INTERNAL_SERVER_ERROR);
           }
-          return $this->json(true, ["product" => $orderForm], "Create product and send email has successfully", HttpStatus::OK);
      }
 
      public function actionUpdate($id)
      {
-          $order = OrderForm::findOne($id);
-          if ($order == null) {
-               return $this->json(false, [], "Order not found", HttpStatus::NOT_FOUND);
+          $transaction = Yii::$app->db->beginTransaction();
+          try {
+               $orderForm = OrderForm::find()->where(['id' => $id])->one();
+               if (!$orderForm) {
+                    return $this->json(false, [], 'Order not found', HttpStatus::NOT_FOUND);
+               }
+               $orderForm->load(Yii::$app->request->post(), '');
+               if ($orderForm->validate() && $orderForm->save()) {
+                    $this->orderService->clearOrderCache();
+                    return $this->json(true, ['order' => $orderForm], 'Update order successfully');
+               }
+               $transaction->commit();
+               return $this->json(false, ['errors' => $orderForm->getErrors()], "Can't update order", HttpStatus::BAD_REQUEST);
+          } catch (\Exception $e) {
+               $transaction->rollBack();
+               Yii::error('Error in actionUpdate: ' . $e->getMessage(), __METHOD__);
+               return $this->json(false, ['errors' => $e->getMessage()], 'Internal Server Error', HttpStatus::INTERNAL_SERVER_ERROR);
           }
-
-          $order->load(Yii::$app->request->post(), '');
-          if (!$order->validate() || !$order->save()) {
-               return $this->json(false, ['errors' => $order->getErrors()], "Can't update product", HttpStatus::BAD_REQUEST);
-          }
-
-          return $this->json(true, ['order' => $order], 'Update product successfully', HttpStatus::OK);
      }
 
      protected function sendEmailToVendor()
@@ -147,14 +189,22 @@ class OrderController extends Controller
 
      public function actionDelete($id)
      {
-          $order = Order::find()->where(['id' => $id])->one();
-          if ($order == null) {
-               return $this->json(false, [], "Order not found", HttpStatus::NOT_FOUND);
+          $transaction = Yii::$app->db->beginTransaction();
+          try {
+               $order = $this->orderRepository->findOne($id);
+               if (empty($order)) {
+                    return $this->json(false, [], "Order not found", HttpStatus::NOT_FOUND);
+               }
+               if (!$this->orderRepository->delete($order)) {
+                    return $this->json(false, ['errors' => $order->getErrors()], "Can't delete order", HttpStatus::BAD_REQUEST);
+               }
+               $this->orderService->clearOrderCache();
+               $transaction->commit();
+               return $this->json(true, [], 'Delete order successfully', HttpStatus::OK);
+          } catch (\Exception $e) {
+               $transaction->rollBack();
+               Yii::error('Error in actionDelete: ' . $e->getMessage(), __METHOD__);
+               return $this->json(false, ['errors' => $e->getMessage()], 'Internal Server Error', HttpStatus::INTERNAL_SERVER_ERROR);
           }
-
-          if (!$order->delete()) {
-               return $this->json(false, ['errors' => $order->getErrors()], "Can't delete order", HttpStatus::BAD_REQUEST);
-          }
-          return $this->json(true, [], 'Delete order successfully', HttpStatus::OK);
      }
 }
