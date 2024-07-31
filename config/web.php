@@ -36,14 +36,16 @@ $config = [
 //               'class' => 'yii\caching\FileCache',
 //               'class' => 'yii\caching\AppCache',
                'class' => 'yii\redis\Cache',
-               'keyPrefix' => 'myapp'
+               'redis' => 'redis',
+//               'keyPrefix' => 'myapp'
           ],
           'user' => [
                'identityClass' => 'app\models\User',
                'enableAutoLogin' => true
           ],
           'errorHandler' => [
-               'errorAction' => 'site/error',
+//               'errorAction' => 'site/error',
+               'class' => 'app\components\CustomErrorHandler',
           ],
           'mailer' => [
                'class' => 'yii\symfonymailer\Mailer',
@@ -91,6 +93,10 @@ $config = [
           'common' => [
                'class' => 'app\components\CommonComponent'
           ],
+          // Dùng hàm để đăng ký thành phần "search"
+          'search' => function () {
+               return new app\components\SolrService;
+          },
      ],
      'modules' => [
           'api' => [
@@ -113,6 +119,11 @@ $config = [
                'class' => 'mdm\admin\Module',
           ],
      ],
+//     'catchAll' => [
+//          'offline/notice',
+//          'param1' => 'value1',
+//          'param2' => 'value2',
+//     ],
 //     'as access' => [
 //          'class' => 'mdm\admin\components\AccessControl',
 //          'allowActions' => [
@@ -121,6 +132,23 @@ $config = [
 //          ,
 //     ],
      'params' => $params,
+     'timeZone' => 'Asia/Ho_Chi_Minh',
+
+     // Add container definitions here
+     'container' => [
+          'definitions' => [
+               'yii\caching\CacheInterface' => [
+                    'class' => 'yii\caching\FileCache',
+               ],
+               'app\services\BrandService' => [
+                    'class' => 'app\services\BrandService',
+               ],
+               'app\repositories\BrandRepository' => [
+                    'class' => 'app\repositories\BrandRepository',
+               ],
+          ],
+     ],
+
 ];
 
 if (YII_ENV_DEV) {

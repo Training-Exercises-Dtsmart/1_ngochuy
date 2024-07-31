@@ -15,10 +15,10 @@ $config = [
             'migrationPath' => [
                 '@app/migrations', // path to your custom migrations directory
             ],
-//             'migrationNamespaces' => [
-//                  // ...
-//                  'yii\queue\db\migrations',
-//             ],
+             'migrationNamespaces' => [
+                  // ...
+                  'yii\queue\db\migrations',
+             ],
         ],
         'batch' => [
             'class' => 'schmunk42\giiant\commands\BatchController',

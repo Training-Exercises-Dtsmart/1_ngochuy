@@ -2,6 +2,7 @@
 
 namespace app\modules\shops\controllers;
 
+use Yii;
 use app\controllers\Controller;
 use app\modules\core\Pagination;
 use app\modules\enums\HttpStatus;
@@ -9,7 +10,6 @@ use app\modules\shops\forms\OrderForm;
 use app\modules\shops\models\Order;
 use app\modules\shops\search\OrderSearch;
 use app\modules\users\models\User;
-use Yii;
 use yii\web\UnauthorizedHttpException;
 
 
@@ -60,14 +60,20 @@ class OrderController extends Controller
 
      public function actionIndex()
      {
-          $orders = Order::find();
-          if (!$orders) {
-               return $this->json(false, [], 'Order not found', HttpStatus::NOT_FOUND);
+          $transaction = Yii::$app->db->beginTransaction();
+          try {
+               $order = Order::find();
+               if (!$order) {
+                    return $this->json(false, [], 'Order not found', HttpStatus::NOT_FOUND);
+               }
+
+               $dataProvider = Pagination::getPagination($order, 10, SORT_DESC);
+               return $this->json(true, ['order' => $dataProvider], 'Success', HttpStatus::OK);
+               $transaction->commit();
+          } catch (\Exception $e) {
+               $transaction->rollBack();
+               return $this->json(false, ['error' => $e->getErrors()], 'Can not find order', HttpStatus::BAD_REQUEST);
           }
-
-          $dataProvider = Pagination::getPagination($orders, 10, SORT_DESC);
-
-          return $this->json(true, ["products" => $dataProvider], "Success", HttpStatus::OK);
      }
 
      public function actionSearch()
@@ -91,14 +97,11 @@ class OrderController extends Controller
           }
 
           if ($orderForm->save()) {
-              if ($orderForm->sendEmailToVendor())
-              {
-                   Yii::error("Email to the vendor is not sent");
-              }
-              else if ($orderForm->sendEmailToCustomer())
-              {
+               if ($orderForm->sendEmailToVendor()) {
+                    Yii::error("Email to the vendor is not sent");
+               } else if ($orderForm->sendEmailToCustomer()) {
                     Yii::error("Email to the customer is not sent");
-              }
+               }
           }
           return $this->json(true, ["product" => $orderForm], "Create product and send email has successfully", HttpStatus::OK);
      }
@@ -136,9 +139,9 @@ class OrderController extends Controller
                ['html' => 'order_completed_customer-html', 'text' => 'order_completed_customer-text'],
                ['order' => $this]
           )
-               ->setFrom([Yii::$app->params['supportEmail'] => Yii::$app->name. 'robot'])
+               ->setFrom([Yii::$app->params['supportEmail'] => Yii::$app->name . 'robot'])
                ->setTo($this->email)
-               ->setSubject('Your order has been completed at: '. Yii::$app->name)
+               ->setSubject('Your order has been completed at: ' . Yii::$app->name)
                ->send();
      }
 

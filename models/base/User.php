@@ -8,6 +8,7 @@ use Yii;
 use yii\helpers\ArrayHelper;
 use yii\behaviors\TimestampBehavior;
 use \app\models\UserQuery;
+use yii\filters\RateLimitInterface;
 
 /**
  * This is the base-model class for table "users".
@@ -38,7 +39,7 @@ use \app\models\UserQuery;
  * @property \app\models\UserAddress[] $userAddresses
  * @property \app\models\UserDeliveryAddress[] $userDeliveryAddresses
  */
-abstract class User extends \yii\db\ActiveRecord implements  \yii\web\IdentityInterface
+abstract class User extends \yii\db\ActiveRecord implements  \yii\web\IdentityInterface, RateLimitInterface
 {
 
     /**
@@ -98,7 +99,47 @@ abstract class User extends \yii\db\ActiveRecord implements  \yii\web\IdentityIn
         ]);
     }
 
-    /**
+     /**
+      * Returns the maximum number of allowed requests and the window size.
+      *
+      * @param \yii\web\Request $request
+      * @param \yii\base\Action $action
+      * @return array an array of two elements. The first element is the maximum number of allowed requests,
+      * and the second element is the window size in seconds.
+      */
+     public function getRateLimit($request, $action)
+     {
+          return [100, 600]; // 100 requests per 10 minutes
+     }
+
+     /**
+      * Loads the number of allowed requests and the corresponding timestamp from a persistent storage.
+      *
+      * @param \yii\web\Request $request
+      * @param \yii\base\Action $action
+      * @return array an array of two elements. The first element is the number of allowed requests,
+      * and the second element is the corresponding UNIX timestamp.
+      */
+     public function loadAllowance($request, $action)
+     {
+          return [$this->allowance, $this->allowance_updated_at];
+     }
+
+     /**
+      * Saves the number of allowed requests and the corresponding timestamp to a persistent storage.
+      *
+      * @param \yii\web\Request $request
+      * @param \yii\base\Action $action
+      * @param int $allowance the number of allowed requests remaining.
+      * @param int $timestamp the current UNIX timestamp.
+      */
+     public function saveAllowance($request, $action, $allowance, $timestamp)
+     {
+          $this->allowance = $allowance;
+          $this->allowance_updated_at = $timestamp;
+          $this->save(false);
+     }
+     /**
      * @return \yii\db\ActiveQuery
      */
     public function getAuthAssignments()
