@@ -3,7 +3,7 @@
  * @Author: JustABusiness huysanti123456@gmail.com
  * @Date: 2024-07-25 15:55:55
  * @LastEditors: JustABusiness huysanti123456@gmail.com
- * @LastEditTime: 2024-07-25 17:09:09
+ * @LastEditTime: 2024-07-31 17:13:22
  * @FilePath: modules/shops/controllers/PaymentTypeController.php
  * @Description: 这是默认设置,可以在设置》工具》File Description中进行配置
  */
@@ -11,11 +11,11 @@
 
 namespace app\modules\shops\controllers;
 
+use Yii;
 use app\modules\enums\HttpStatus;
 use app\modules\shops\forms\PaymentTypeForm;
 use app\modules\shops\models\PaymentType;
 use app\modules\shops\search\PaymentTypeSearch;
-use Yii;
 use app\controllers\Controller;
 
 
