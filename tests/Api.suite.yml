@@ -1,0 +1,10 @@
+actor: ApiTester
+modules:
+    # enable helpers as array
+    enabled:
+      - \Helper\Api
+      - REST:
+          url: http://localhost:8080/api/v1/
+          depends: PhpBrowser
+      - Yii2:
+            part: [ orm, email ]

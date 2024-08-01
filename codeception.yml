@@ -8,6 +8,16 @@ paths:
 settings:
     memory_limit: 1024M
     colors: true
+suites:
+    api:
+        actor: ApiTester
+        path: tests/api
+        modules:
+            enabled:
+                - \Helper\Api
+                - REST:
+                      url: http://your-app-url/api/
+                      depends: PhpBrowser
 modules:
     config:
         Yii2:
