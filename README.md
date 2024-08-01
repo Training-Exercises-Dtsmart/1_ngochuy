@@ -196,8 +196,13 @@ https://documenter.getpostman.com/view/30812144/2sA3kXG25H
 
 ### API Testing 
 
++ User API
+  
 <img width="1085" alt="Ảnh màn hình 2024-08-01 lúc 15 59 16" src="https://github.com/user-attachments/assets/6857b982-944f-46ad-8ba0-0060d79affb4">
 
++ Product API
+
+<img width="1067" alt="Ảnh màn hình 2024-08-01 lúc 16 36 53" src="https://github.com/user-attachments/assets/2a9283fc-c9a5-460a-a785-9317e801956b">
 
 
 
