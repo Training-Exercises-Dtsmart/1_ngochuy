@@ -1,4 +1,4 @@
-# <h1> API link </h1>   ![tải xuống](https://github.com/user-attachments/assets/4c06ad3b-0105-4847-a3d3-9ea8e867d135) 
+<img width="1085" alt="Ảnh màn hình 2024-08-01 lúc 15 59 16" src="https://github.com/user-attachments/assets/0761e24d-2ee5-45e6-9fce-763f640c27f7"><img width="1085" alt="Ảnh màn hình 2024-08-01 lúc 15 59 16" src="https://github.com/user-attachments/assets/0ace4f6d-deda-46b7-a32a-d61a5b4e6ad5"># <h1> API link </h1>   ![tải xuống](https://github.com/user-attachments/assets/4c06ad3b-0105-4847-a3d3-9ea8e867d135) 
 
 
 https://documenter.getpostman.com/view/30812144/2sA3kXG25H
@@ -190,5 +190,15 @@ https://documenter.getpostman.com/view/30812144/2sA3kXG25H
 <img width="1192" alt="Ảnh màn hình 2024-07-23 lúc 14 48 02" src="https://github.com/user-attachments/assets/7bdab240-d406-49f1-ac5f-39959e605f12">
 
 <img width="1418" alt="Ảnh màn hình 2024-07-23 lúc 14 54 55" src="https://github.com/user-attachments/assets/e5b269ee-a5bb-49dd-8413-88a1131fed60">
+
+
+-------------------------------------- 
+
+### API Testing 
+
+<img width="1085" alt="Ảnh màn hình 2024-08-01 lúc 15 59 16" src="https://github.com/user-attachments/assets/6857b982-944f-46ad-8ba0-0060d79affb4">
+
+
+
 
 
