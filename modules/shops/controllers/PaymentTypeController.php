@@ -3,7 +3,7 @@
  * @Author: JustABusiness huysanti123456@gmail.com
  * @Date: 2024-07-25 15:55:55
  * @LastEditors: JustABusiness huysanti123456@gmail.com
- * @LastEditTime: 2024-07-31 17:13:22
+ * @LastEditTime: 2024-08-01 10:27:56
  * @FilePath: modules/shops/controllers/PaymentTypeController.php
  * @Description: 这是默认设置,可以在设置》工具》File Description中进行配置
  */
@@ -12,44 +12,78 @@
 namespace app\modules\shops\controllers;
 
 use Yii;
+use app\components\CustomSerializer;
+use app\components\RateLimitBehavior;
 use app\modules\enums\HttpStatus;
 use app\modules\shops\forms\PaymentTypeForm;
 use app\modules\shops\models\PaymentType;
-use app\modules\shops\search\PaymentTypeSearch;
 use app\controllers\Controller;
+use app\services\PaymentTypeService;
+use app\repositories\PaymentTypeRepository;
 
 
 class PaymentTypeController extends Controller
 {
-     public $modelClass = 'modules\models\Product';
+     public $modelClass = 'app\models\PaymentType';
 
      public $serializer = [
-          'class' => 'yii\rest\Serializer',
+          'class' => CustomSerializer::class,
           'collectionEnvelope' => 'items',
      ];
 
+     private $paymentTypeService;
+
+     private $paymentTypeRepository;
+
+     public function __construct($id, $module, PaymentTypeService $paymentTypeService, PaymentTypeRepository $paymentTypeRepository, $config = [])
+     {
+          $this->paymentTypeService = $paymentTypeService;
+          $this->paymentTypeRepository = $paymentTypeRepository;
+          parent::__construct($id, $module, $config);
+     }
+
+     public function behaviors()
+     {
+          $behaviors = parent::behaviors();
+
+          if (in_array($this->action->id, ['index', 'create', 'update', 'delete'])) {
+               $behaviors['rateLimiter'] = [
+                    'class' => RateLimitBehavior::class,
+                    'enableRateLimitHeaders' => true,
+               ];
+          }
+          return $behaviors;
+     }
+
      public function actionIndex()
      {
-          $key = "payment_type-list";
-          $payment_types = Yii::$app->cache->get($key);
-          if (!$payment_types) {
-               $searchModel = new PaymentTypeSearch();
-               $payment_types = $searchModel->search(Yii::$app->request->queryParams);
-               Yii::$app->cache->set($key, $payment_types, 600);
+          try {
+               $paymentTypes = $this->paymentTypeService->getAllPaymentType(Yii::$app->request->queryParams);
+               return $this->json(true, ["paymentTypes" => $paymentTypes], "Success", HttpStatus::OK);
+          } catch (\Exception $e) {
+               Yii::error('Error in actionIndex: ' . $e->getMessage(), __METHOD__);
+               return $this->json(false, ['errors' => $e->getMessage()], 'Internal Server Error', HttpStatus::INTERNAL_SERVER_ERROR);
           }
-          return $this->json(true, $payment_types);
      }
 
      public function actionCreate()
      {
-          $paymentTypeForm = new PaymentTypeForm();
-          $paymentTypeForm->load(Yii::$app->request->post());
+          $transaction = Yii::$app->db->beginTransaction();
+          try {
+               $paymentType = new PaymentTypeForm();
+               $paymentType->load(Yii::$app->request->post(), '');
 
-          if (!$paymentTypeForm->validate() || !$paymentTypeForm->save()) {
-               return $this->json(false, ["errors" => $paymentTypeForm->getErrors()], "Can't create new payment type", HttpStatus::BAD_REQUEST);
+               if (!$paymentType->validate() || !$paymentType->save()) {
+                    return $this->json(false, ['errors' => $paymentType->getErrors()], "Bad request", HttpStatus::BAD_REQUEST);
+               }
+               $this->paymentTypeService->clearPaymentTypeCache();
+               $transaction->commit();
+               return $this->json(true, ["Payment Type" => $paymentType], "Create comment successfully", HttpStatus::OK);
+          } catch (\Exception $e) {
+               $transaction->rollBack();
+               Yii::error('Error in actionCreate: ' . $e->getMessage(), __METHOD__);
+               return $this->json(false, ['errors' => $e->getMessage()], 'Internal Server Error', HttpStatus::INTERNAL_SERVER_ERROR);
           }
-
-          return $this->json(true, ["payment_type" => $paymentTypeForm], "Create  a payment type successfully");
      }
 
      public function actionView($id)
@@ -65,9 +99,9 @@ class PaymentTypeController extends Controller
      {
           $paymentType = PaymentType::find()->where(['id' => $id])->one();
 
-          if (!Yii::$app->user->can('updatePaymentType', ['paymentType' => $paymentType])) {
-               return $this->json(false, [], 'Permission denied', HttpStatus::FORBIDDEN);
-          }
+//          if (!Yii::$app->user->can('updatePaymentType', ['paymentType' => $paymentType])) {
+//               return $this->json(false, [], 'Permission denied', HttpStatus::FORBIDDEN);
+//          }
 
           if (empty($paymentType)) {
                return $this->json(false, [], 'Payment type not found', HttpStatus::NOT_FOUND);
@@ -82,33 +116,50 @@ class PaymentTypeController extends Controller
 
      public function actionDelete($id)
      {
-          $paymentType = PaymentType::find()->where(["id" => $id])->one();
-          if (!Yii::$app->user->can('deletePaymentType', ['payment_type' => $paymentType])) {
-               return $this->json(false, [], 'Permission denied', HttpStatus::FORBIDDEN);
+//          if (!Yii::$app->user->can('deletePaymentType', ['payment_type' => $paymentType])) {
+//               return $this->json(false, [], 'Permission denied', HttpStatus::FORBIDDEN);
+//          }
+          $transaction = Yii::$app->db->beginTransaction();
+          try {
+               $paymentType = $this->paymentTypeRepository->findOne($id);
+               if (empty($paymentType)) {
+                    return $this->json(false, [], "Payment not found", HttpStatus::NOT_FOUND);
+               }
+               if (!$this->paymentTypeRepository->delete($paymentType)) {
+                    return $this->json(false, ['errors' => $paymentType->getErrors()], "Can't delete paymentType", HttpStatus::BAD_REQUEST);
+               }
+               $this->paymentTypeService->clearPaymentTypeCache();
+               $transaction->commit();
+               return $this->json(true, [], 'Delete paymentType successfully', HttpStatus::OK);
+          } catch (\Exception $e) {
+               $transaction->rollBack();
+               Yii::error('Error in actionDelete: ' . $e->getMessage(), __METHOD__);
+               return $this->json(false, ['errors' => $e->getMessage()], 'Internal Server Error', HttpStatus::INTERNAL_SERVER_ERROR);
           }
 
-          if (empty($post)) {
-               return $this->json(false, [], "Payment type not found", HttpStatus::NOT_FOUND);
-          }
-          $post->save();
-          
-          return $this->json(true, [], 'Delete  successfully', HttpStatus::OK);
      }
 
      public function actionSearch()
      {
-          $searchModel = new PaymentTypeSearch();
-          $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-          return $this->json(true, ["payment_types" => $dataProvider->getModels()], "Find successfully");
+          try {
+               $paymentTypes = $this->paymentTypeService->searchPaymentTypes(Yii::$app->request->queryParams);
+               return $this->json(true, ['payment_types' => $paymentTypes], 'Find payment types successfully', HttpStatus::OK);
+          } catch (\Exception $e) {
+               Yii::error('Error in actionSearch: ' . $e->getMessage(), __METHOD__);
+               return $this->json(false, ['errors' => $e->getMessage()], 'Internal Server Error', HttpStatus::INTERNAL_SERVER_ERROR);
+          }
      }
 
      protected function findModel($id)
      {
-          if (($model = PaymentType::findOne($id) !== null)) {
-               return $model;
-          } else {
-               return $this->json(false, ['error' => $model->getErrors()], 'Failed to find payment type', HttpStatus::class);
+          try {
+               if (($model = $this->paymentTypeRepository->findOne($id)) !== null) {
+                    return $this->json(true, ['data' => $model], 'Success', HttpStatus::OK);
+               }
+               return $this->json(false, [], 'The requested page does not exist.', HttpStatus::NOT_FOUND);
+          } catch (\Exception $e) {
+               Yii::error('Error in findModel: ' . $e->getMessage(), __METHOD__);
+               return $this->json(false, ['errors' => $e->getMessage()], 'Internal Server Error', HttpStatus::INTERNAL_SERVER_ERROR);
           }
      }
 }

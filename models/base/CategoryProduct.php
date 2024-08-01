@@ -7,7 +7,7 @@ namespace app\models\base;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\behaviors\TimestampBehavior;
-use \app\models\CategoryProductQuery;
+use app\models\query\CategoryProductQuery;
 
 /**
  * This is the base-model class for table "category_product".

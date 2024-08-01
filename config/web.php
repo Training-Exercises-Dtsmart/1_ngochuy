@@ -149,6 +149,15 @@ $config = [
                'app\services\OrderService' => [
                     'class' => 'app\services\OrderService',
                ],
+               'app\services\PaymentTypeService' => [
+                    'class' => 'app\services\PaymentTypeService',
+               ],
+               'app\services\PostService' => [
+                    'class' => 'app\services\PostService',
+               ],
+               'app\services\ProductService' => [
+                    'class' => 'app\services\ProductService',
+               ],
                'app\repositories\CommentRepository' => [
                     'class' => 'app\repositories\CommentRepository',
                ],
@@ -157,6 +166,15 @@ $config = [
                ],
                'app\repositories\OrderRepository' => [
                     'class' => 'app\repositories\OrderRepository',
+               ],
+               'app\repositories\PaymentTypeRepository' => [
+                    'class' => 'app\repositories\PaymentTypeRepository',
+               ],
+               'app\repositories\PostRepository' => [
+                    'class' => 'app\repositories\PostRepository',
+               ],
+               'app\repositories\ProductRepository' => [
+                    'class' => 'app\repositories\ProductRepository',
                ],
           ],
      ],

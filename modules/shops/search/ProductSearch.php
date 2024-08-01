@@ -18,7 +18,7 @@ class ProductSearch extends Product
     public function rules()
     {
         return [
-            [['id', 'category_product_id', 'availabel_stock', 'is_best_sell', 'product_status', 'user_id'], 'integer'],
+            [['id', 'category_product_id', 'availabel_stock', 'is_best_sell',], 'integer'],
             [['name', 'description', 'slug', 'detail', 'created_at', 'updated_at', 'deleted_at'], 'safe'],
             [['price'], 'number'],
         ];
@@ -68,8 +68,8 @@ class ProductSearch extends Product
             'category_product_id' => $this->category_product_id,
             'availabel_stock' => $this->availabel_stock,
             'is_best_sell' => $this->is_best_sell,
-            'product_status' => $this->product_status,
-            'user_id' => $this->user_id,
+//            'product_status' => $this->product_status,
+//            'user_id' => $this->user_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'deleted_at' => $this->deleted_at,

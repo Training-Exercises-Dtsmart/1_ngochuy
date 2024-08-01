@@ -3,7 +3,7 @@
  * @Author: RobertPham0327 s3926681@rmit.edu.vn
  * @Date: 2024-07-19 10:13:35
  * @LastEditors: JustABusiness huysanti123456@gmail.com
- * @LastEditTime: 2024-07-31 16:50:52
+ * @LastEditTime: 2024-08-01 10:19:56
  * @FilePath: modules/shops/controllers/CommentController.php
  * @Description: 这是默认设置,可以在设置》工具》File Description中进行配置
  */
@@ -95,6 +95,7 @@ class CommentController extends Controller
           try {
                $commentForm = new CommentForm();
                $commentForm->load(Yii::$app->request->post(), '');
+               
                if (!$commentForm->validate() || !$commentForm->save()) {
                     return $this->json(false, ['errors' => $commentForm->getErrors()], "Bad request", HttpStatus::BAD_REQUEST);
                }
@@ -108,24 +109,27 @@ class CommentController extends Controller
           }
      }
 
-     public function actionReply()
+     public function actionReply($commentId)
      {
-          $parentId = Yii::$app->request->post('parent_id');
-          $parentComment = $this->findModel($parentId);
+          $transaction = Yii::$app->db->beginTransaction();
+          try {
+               $comment = $this->commentRepository->findOne($commentId);
+               if (!$comment) {
+                    return $this->json(false, [], 'Comment not found', HttpStatus::NOT_FOUND);
+               }
 
-          if (!$parentComment) {
-               return $this->json(false, [], 'Parent comment not found', HttpStatus::NOT_FOUND);
+               $replyContent = Yii::$app->request->post('replyContent');
+               if (!$this->commentRepository->reply($comment, $replyContent)) {
+                    return $this->json(false, [], 'Can not reply comment', HttpStatus::BAD_REQUEST);
+               }
+
+               $transaction->commit();
+               return $this->json(true, [], 'Reply comment successfully', HttpStatus::OK);
+          } catch (\Exception $e) {
+               $transaction->rollBack();
+               Yii::error('Error in actionReply: ' . $e->getMessage(), __METHOD__);
+               return $this->json(false, ['errors' => $e->getMessage()], 'Internal Server Error', HttpStatus::INTERNAL_SERVER_ERROR);
           }
-
-          $comment = new CommentForm();
-          $comment->load(Yii::$app->request->post(), '');
-          $comment->parent_id = $parentId;
-
-          if (!$comment->validate() || !$comment->save()) {
-               return $this->json(false, ['errors' => $comment->getErrors()], "Can't reply to comment", HttpStatus::BAD_REQUEST);
-          }
-
-          return $this->json(true, ['comment' => $comment], 'Reply to comment successfully', HttpStatus::OK);
      }
 
      public function actionUpdate($id)

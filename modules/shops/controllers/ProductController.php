@@ -2,89 +2,156 @@
 
 namespace app\modules\shops\controllers;
 
+use app\components\RateLimitBehavior;
+use Yii;
+use app\components\CustomSerializer;
 use app\controllers\Controller;
 use app\models\form\ProductForm;
 use app\models\search\ProductSearch;
 use app\modules\enums\HttpStatus;
 use app\modules\shops\models\Product;
-use Yii;
+use app\services\ProductService;
+use app\repositories\ProductRepository;
 
 class ProductController extends Controller
 {
-     public $modelClass = 'modules\models\Product';
+     public $modelClass = 'app\models\Product';
 
      public $serializer = [
-          'class' => 'yii\rest\Serializer',
+          'class' => CustomSerializer::class,
           'collectionEnvelope' => 'items',
      ];
 
+     private $productService;
+
+     private $productRepository;
+
+     public function __construct($id, $module, ProductService $productService, ProductRepository $productRepository, $config = [])
+     {
+          $this->productService = $productService;
+          $this->productRepository = $productRepository;
+          parent::__construct($id, $module, $config);
+     }
+
+     public function behaviors()
+     {
+          $behaviors = parent::behaviors();
+
+          if (in_array($this->action->id, ['index', 'create', 'update', 'delete'])) {
+               $behaviors['rateLimiter'] = [
+                    'class' => RateLimitBehavior::class,
+                    'enableRateLimitHeaders' => true,
+               ];
+          }
+          return $behaviors;
+     }
      public function actionIndex()
      {
-          $cacheKey = 'product_index_' . md5(json_encode(Yii::$app->request->queryParams));
-          $cachedData = Yii::$app->cache->get($cacheKey);
-
-          if ($cachedData === false) {
-               $searchModel = new ProductSearch();
-               $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-               $cachedData = $dataProvider->getModels();
-               Yii::$app->cache->set($cacheKey, $cachedData, 3600); // Cache for 1 hour
+          try {
+               $brands = $this->productService->getAllProducts(Yii::$app->request->queryParams);
+               return $this->json(true, ["brands" => $brands], "Success", HttpStatus::OK);
+          } catch (\Exception $e) {
+               Yii::error('Error in actionIndex: ' . $e->getMessage(), __METHOD__);
+               return $this->json(false, ['errors' => $e->getMessage()], 'Internal Server Error', HttpStatus::INTERNAL_SERVER_ERROR);
           }
+     }
 
-          return $this->json(true, [
-               "products" => $cachedData
-          ], "Success", 200);
+     public function actionCreate()
+     {
+          $transaction = Yii::$app->db->beginTransaction();
+          try {
+               $product = new ProductForm();
+               $product->load(Yii::$app->request->post(), '');
+
+               if (!$product->validate() || !$product->save()) {
+                    return $this->json(false, ['errors' => $product->getErrors()], "Bad request", HttpStatus::BAD_REQUEST);
+               }
+               $this->productService->clearProductCache();
+               $transaction->commit();
+               return $this->json(true, ["product" => $product], "Create product successfully", HttpStatus::OK);
+          } catch (\Exception $e) {
+               $transaction->rollBack();
+               Yii::error('Error in actionCreate: ' . $e->getMessage(), __METHOD__);
+               return $this->json(false, ['errors' => $e->getMessage()], 'Internal Server Error', HttpStatus::INTERNAL_SERVER_ERROR);
+          }
+     }
+
+     public function actionView($id)
+     {
+          $payment_type = Product::find()->where(["id" => $id])->one();
+          if (empty($payment_type)) {
+               return $this->json(false, [], 'Payment type not found', HttpStatus::NOT_FOUND);
+          }
+          return $this->json(true, ["payment_types" => $payment_type], 'Find payment type successfully');
+     }
+
+     public function actionUpdate($id)
+     {
+          $transaction = Yii::$app->db->beginTransaction();
+          try {
+               $productForm = \app\modules\shops\forms\ProductForm::find()->where(['id' => $id])->one();
+               if (!$productForm) {
+                    return $this->json(false, [], 'Product not found', HttpStatus::NOT_FOUND);
+               }
+               $productForm->load(Yii::$app->request->post(), '');
+               if ($productForm->validate() && $productForm->save()) {
+                    $this->productService->clearProductCache();
+                    return $this->json(true, ['brand' => $productForm], 'Update product successfully');
+               }
+               $transaction->commit();
+               return $this->json(false, ['errors' => $productForm->getErrors()], "Can't update brand", HttpStatus::BAD_REQUEST);
+          } catch (\Exception $e) {
+               $transaction->rollBack();
+               Yii::error('Error in actionUpdate: ' . $e->getMessage(), __METHOD__);
+               return $this->json(false, ['errors' => $e->getMessage()], 'Internal Server Error', HttpStatus::INTERNAL_SERVER_ERROR);
+          }
+     }
+
+     public function actionDelete($id)
+     {
+
+          $transaction = Yii::$app->db->beginTransaction();
+          try {
+               $product = $this->productRepository->findOne($id);
+               if (empty($product)) {
+                    return $this->json(false, [], "Payment not found", HttpStatus::NOT_FOUND);
+               }
+               if (!$this->productRepository->delete($product)) {
+                    return $this->json(false, ['errors' => $product->getErrors()], "Can't delete product", HttpStatus::BAD_REQUEST);
+               }
+               $this->productService->clearProductCache();
+               $transaction->commit();
+               return $this->json(true, [], 'Delete product successfully', HttpStatus::OK);
+          } catch (\Exception $e) {
+               $transaction->rollBack();
+               Yii::error('Error in actionDelete: ' . $e->getMessage(), __METHOD__);
+               return $this->json(false, ['errors' => $e->getMessage()], 'Internal Server Error', HttpStatus::INTERNAL_SERVER_ERROR);
+          }
 
      }
 
      public function actionSearch()
      {
-          $modelSearch = new ProductSearch();
-          $dataProvider = $modelSearch->search(Yii::$app->request->getQueryParams());
-
-          if ($dataProvider->getCount() == 0) {
-               return $this->json(false, [], "Not found", HttpStatus::NOT_FOUND);
+          try {
+               $products = $this->productService->searchProducts(Yii::$app->request->queryParams);
+               return $this->json(true, ['payment_types' => $products], 'Find payment types successfully', HttpStatus::OK);
+          } catch (\Exception $e) {
+               Yii::error('Error in actionSearch: ' . $e->getMessage(), __METHOD__);
+               return $this->json(false, ['errors' => $e->getMessage()], 'Internal Server Error', HttpStatus::INTERNAL_SERVER_ERROR);
           }
-          return $this->json(true, ["products" => $dataProvider->getModels()], "Find successfully", HttpStatus::OK);
      }
 
-     public function actionCreate()
+     protected function findModel($id)
      {
-          $productForm = new ProductForm();
-          $productForm->load(Yii::$app->request->post(), '');
-
-          if (!$productForm->validate() || !$productForm->save()) {
-               return $this->json(false, ["errors" => $productForm->getErrors()], "Can't create new product", HttpStatus::BAD_REQUEST);
+          try {
+               if (($model = $this->productRepository->findOne($id)) !== null) {
+                    return $this->json(true, ['data' => $model], 'Success', HttpStatus::OK);
+               }
+               return $this->json(false, [], 'The requested page does not exist.', HttpStatus::NOT_FOUND);
+          } catch (\Exception $e) {
+               Yii::error('Error in findModel: ' . $e->getMessage(), __METHOD__);
+               return $this->json(false, ['errors' => $e->getMessage()], 'Internal Server Error', HttpStatus::INTERNAL_SERVER_ERROR);
           }
-
-          return $this->json(true, ["product" => $productForm], "Create product successfully", HttpStatus::OK);
-     }
-
-     public function actionUpdate($id)
-     {
-          $product = Product::findOne($id);
-          $product->load(Yii::$app->request->post(), '');
-
-          if (!$product->validate() || !$product->save()) {
-               return $this->json(false, ['errors' => $product->getErrors()], "Can't update product", HttpStatus::BAD_REQUEST);
-          }
-
-          return $this->json(true, ['product' => $product], 'Update product successfully', HttpStatus::OK);
-     }
-
-     public function actionDelete($id)
-     {
-          $product = Product::find()->where(["id" => $id])->one();
-
-          if (empty($product)) {
-               return $this->json(false, [], "Product not found", HttpStatus::NOT_FOUND);
-          }
-
-          if (!$product->delete()) {
-               return $this->json(false, ['errors' => $product->getErrors()], "Can't delete product", HttpStatus::BAD_REQUEST);
-          }
-
-          return $this->json(true, [], 'Delete product successfully', HttpStatus::OK);
-
      }
 
      public function actionComponent()

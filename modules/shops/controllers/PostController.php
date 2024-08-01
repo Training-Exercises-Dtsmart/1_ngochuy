@@ -2,89 +2,134 @@
 
 namespace app\modules\shops\controllers;
 
-
-use app\controllers\Controller;
-use app\modules\core\Pagination;
-use app\modules\enums\HttpStatus;
-use app\modules\shops\forms\PostForm;
+use app\components\RateLimitBehavior;
 use app\modules\shops\models\AddToPost;
-use app\modules\shops\models\Post;
-use app\modules\shops\search\PostSearch;
 use Yii;
-
+use app\controllers\Controller;
+use app\services\PostService;
+use app\components\CustomSerializer;
+use app\modules\enums\HttpStatus;
 
 class PostController extends Controller
 {
-     public $modelClass = 'modules\models\Post';
+     public $modelClass = 'app\models\Post';
      public $serializer = [
-          'class' => 'yii\rest\Serializer',
+          'class' => CustomSerializer::class,
           'collectionEnvelope' => 'items',
      ];
 
+     private $postService;
+
+     public function __construct($id, $module, PostService $postService, $config = [])
+     {
+          $this->postService = $postService;
+          parent::__construct($id, $module, $config);
+     }
+
+     public function behaviors()
+     {
+          $behaviors = parent::behaviors();
+
+          if (in_array($this->action->id, ['index', 'create', 'update', 'delete'])) {
+               $behaviors['rateLimiter'] = [
+                    'class' => RateLimitBehavior::class,
+                    'enableRateLimitHeaders' => true,
+               ];
+          }
+          return $behaviors;
+     }
      public function actionIndex()
      {
-          $posts = Post::find();
-
-          $dataProvider = Pagination::getPagination($posts, 10, SORT_DESC);
-          return $this->json(true, ["posts" => $dataProvider], "Success", HttpStatus::OK);
+          try {
+               $dataProvider = $this->postService->getAllPosts(Yii::$app->request->queryParams);
+               return $this->json(true, ["posts" => $dataProvider], "Success", HttpStatus::OK);
+          } catch (\Exception $e) {
+               Yii::error('Error in actionIndex: ' . $e->getMessage(), __METHOD__);
+               return $this->json(false, ['errors' => 'Internal Server Error'], 'Internal Server Error', HttpStatus::INTERNAL_SERVER_ERROR);
+          }
      }
 
      public function actionCreate()
      {
-          $postForm = new PostForm();
-
-          $data = $postForm->load(Yii::$app->request->post(), '');
-          if ($postForm->uploadMultipleImage($data) && $postForm->validate()) {
-               if ($postForm->save()) {
-                    return $this->json(true, ["product" => $postForm], "Create product successfully", HttpStatus::OK);
+          try {
+               $postData = Yii::$app->request->post();
+               if ($this->postService->createPost($postData)) {
+                    return $this->json(true, ["post" => $postData], "Create post successfully", HttpStatus::OK);
                }
+               return $this->json(false, ['errors' => 'Validation Failed'], "Bad request", HttpStatus::BAD_REQUEST);
+          } catch (\Exception $e) {
+               Yii::error('Error in actionCreate: ' . $e->getMessage(), __METHOD__);
+               return $this->json(false, ['errors' => 'Internal Server Error'], 'Internal Server Error', HttpStatus::INTERNAL_SERVER_ERROR);
           }
-          return $this->json(false, ['errors' => $postForm->getErrors()], "Bad request", HttpStatus::BAD_REQUEST);
      }
 
      public function actionUpdate($id)
      {
-          $post = Post::find()->where(['id' => $id])->one();
-
-          $post->load(Yii::$app->request->post());
-          if (!$post->validate() || !$post->save()) {
-               return $this->json(false, ["errors" => $post->getErrors()], "Can't update post", HttpStatus::BAD_REQUEST);
+          try {
+               $postData = Yii::$app->request->post();
+               if ($this->postService->updatePost($id, $postData)) {
+                    return $this->json(true, ["post" => $postData], "Update post successfully", HttpStatus::OK);
+               }
+               return $this->json(false, ['errors' => 'Validation Failed'], "Bad request", HttpStatus::BAD_REQUEST);
+          } catch (\Exception $e) {
+               Yii::error('Error in actionUpdate: ' . $e->getMessage(), __METHOD__);
+               return $this->json(false, ['errors' => 'Internal Server Error'], 'Internal Server Error', HttpStatus::INTERNAL_SERVER_ERROR);
           }
-          return $this->json(true, ["post" => $post], "Update post successfully", HttpStatus::OK);
      }
 
      public function actionDelete($id)
      {
-          $post = Post::find()->where(["id" => $id])->one();
-          if (empty($post)) {
-               return $this->json(false, [], "Post not found", HttpStatus::NOT_FOUND);
+          try {
+               if ($this->postService->deletePost($id)) {
+                    return $this->json(true, [], 'Delete post successfully', HttpStatus::OK);
+               }
+               return $this->json(false, ['errors' => 'Post not found'], "Not found", HttpStatus::NOT_FOUND);
+          } catch (\Exception $e) {
+               Yii::error('Error in actionDelete: ' . $e->getMessage(), __METHOD__);
+               return $this->json(false, ['errors' => 'Internal Server Error'], 'Internal Server Error', HttpStatus::INTERNAL_SERVER_ERROR);
           }
-
-          if (!$post->delete()) {
-               return $this->json(false, ['errors' => $post->getErrors()], "Can't delete post", HttpStatus::BAD_REQUEST);
-          }
-          return $this->json(true, [], 'Delete post successfully', HttpStatus::OK);
      }
 
      public function actionSearch()
      {
-          $searchModel = new PostSearch();
-          $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-          if ($dataProvider->getCount() == 0) {
-               return $this->json(false, ['errors' => $searchModel->getErrors()], "Not found", HttpStatus::NOT_FOUND);
+          try {
+               $queryParams = Yii::$app->request->queryParams;
+               $posts = $this->postService->searchPosts($queryParams);
+               if (empty($posts)) {
+                    return $this->json(false, ['errors' => 'Not found'], "Not found", HttpStatus::NOT_FOUND);
+               }
+               return $this->json(true, ["posts" => $posts], "Find successfully", HttpStatus::OK);
+          } catch (\Exception $e) {
+               Yii::error('Error in actionSearch: ' . $e->getMessage(), __METHOD__);
+               return $this->json(false, ['errors' => 'Internal Server Error'], 'Internal Server Error', HttpStatus::INTERNAL_SERVER_ERROR);
           }
-
-          return $this->json(true, ["posts" => $dataProvider->getModels()], "Find successfully");
      }
-
 
      public function actionCreateFakeData()
      {
-          if (Yii::$app->queue->delay(2)->push(new AddToPost())) {
-               return $this->json(true, [], "Enqueued job to create fake data", HttpStatus::OK);
-          } else {
-               return $this->json(false, [], "Failed to enqueue job", HttpStatus::INTERNAL_SERVER_ERROR);
+          try {
+               if (Yii::$app->queue->delay(2)->push(new AddToPost())) {
+                    return $this->json(true, [], "Enqueued job to create fake data", HttpStatus::OK);
+               } else {
+                    return $this->json(false, [], "Failed to enqueue job", HttpStatus::INTERNAL_SERVER_ERROR);
+               }
+          } catch (\Exception $e) {
+               Yii::error('Error in actionCreateFakeData: ' . $e->getMessage(), __METHOD__);
+               return $this->json(false, ['errors' => 'Internal Server Error'], 'Internal Server Error', HttpStatus::INTERNAL_SERVER_ERROR);
+          }
+     }
+
+     public function actionCreateFakeData2()
+     {
+          try {
+               if (Yii::$app->queue->delay(2)->push(new AddToPost())) {
+                    return $this->json(true, [], "Enqueued job to create fake data", HttpStatus::OK);
+               } else {
+                    return $this->json(false, [], "Failed to enqueue job", HttpStatus::INTERNAL_SERVER_ERROR);
+               }
+          } catch (\Exception $e) {
+               Yii::error('Error in actionCreateFakeData: ' . $e->getMessage(), __METHOD__);
+               return $this->json(false, ['errors' => 'Internal Server Error'], 'Internal Server Error', HttpStatus::INTERNAL_SERVER_ERROR);
           }
      }
 
