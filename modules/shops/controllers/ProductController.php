@@ -2,12 +2,11 @@
 
 namespace app\modules\shops\controllers;
 
-use app\components\RateLimitBehavior;
 use Yii;
+use app\components\RateLimitBehavior;
 use app\components\CustomSerializer;
 use app\controllers\Controller;
 use app\models\form\ProductForm;
-use app\models\search\ProductSearch;
 use app\modules\enums\HttpStatus;
 use app\modules\shops\models\Product;
 use app\services\ProductService;
@@ -48,8 +47,8 @@ class ProductController extends Controller
      public function actionIndex()
      {
           try {
-               $brands = $this->productService->getAllProducts(Yii::$app->request->queryParams);
-               return $this->json(true, ["brands" => $brands], "Success", HttpStatus::OK);
+               $products = $this->productService->getAllProducts(Yii::$app->request->queryParams);
+               return $this->json(true, ["products" => $products], "Success", HttpStatus::OK);
           } catch (\Exception $e) {
                Yii::error('Error in actionIndex: ' . $e->getMessage(), __METHOD__);
                return $this->json(false, ['errors' => $e->getMessage()], 'Internal Server Error', HttpStatus::INTERNAL_SERVER_ERROR);
@@ -78,11 +77,11 @@ class ProductController extends Controller
 
      public function actionView($id)
      {
-          $payment_type = Product::find()->where(["id" => $id])->one();
-          if (empty($payment_type)) {
-               return $this->json(false, [], 'Payment type not found', HttpStatus::NOT_FOUND);
+          $product = Product::find()->where(["id" => $id])->one();
+          if (empty($product)) {
+               return $this->json(false, [], 'Product not found', HttpStatus::NOT_FOUND);
           }
-          return $this->json(true, ["payment_types" => $payment_type], 'Find payment type successfully');
+          return $this->json(true, ["product" => $product], 'Find payment type successfully');
      }
 
      public function actionUpdate($id)
@@ -96,7 +95,7 @@ class ProductController extends Controller
                $productForm->load(Yii::$app->request->post(), '');
                if ($productForm->validate() && $productForm->save()) {
                     $this->productService->clearProductCache();
-                    return $this->json(true, ['brand' => $productForm], 'Update product successfully');
+                    return $this->json(true, ['product' => $productForm], 'Update product successfully');
                }
                $transaction->commit();
                return $this->json(false, ['errors' => $productForm->getErrors()], "Can't update brand", HttpStatus::BAD_REQUEST);
@@ -114,7 +113,7 @@ class ProductController extends Controller
           try {
                $product = $this->productRepository->findOne($id);
                if (empty($product)) {
-                    return $this->json(false, [], "Payment not found", HttpStatus::NOT_FOUND);
+                    return $this->json(false, [], "Product not found", HttpStatus::NOT_FOUND);
                }
                if (!$this->productRepository->delete($product)) {
                     return $this->json(false, ['errors' => $product->getErrors()], "Can't delete product", HttpStatus::BAD_REQUEST);
@@ -134,7 +133,7 @@ class ProductController extends Controller
      {
           try {
                $products = $this->productService->searchProducts(Yii::$app->request->queryParams);
-               return $this->json(true, ['payment_types' => $products], 'Find payment types successfully', HttpStatus::OK);
+               return $this->json(true, ['products' => $products], 'Find payment types successfully', HttpStatus::OK);
           } catch (\Exception $e) {
                Yii::error('Error in actionSearch: ' . $e->getMessage(), __METHOD__);
                return $this->json(false, ['errors' => $e->getMessage()], 'Internal Server Error', HttpStatus::INTERNAL_SERVER_ERROR);
