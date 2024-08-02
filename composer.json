@@ -26,7 +26,9 @@
         "vonage/client": "^4.0",
         "vonage/client-core": "^4.8",
         "yiithings/yii2-dotenv": "*",
-        "yiisoft/yii2-redis": "^2.0"
+        "yiisoft/yii2-redis": "^2.0",
+        "yii2tech/ar-softdelete": "^1.0",
+        "yii2tech/ar-position": "^1.0"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",

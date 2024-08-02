@@ -80,7 +80,14 @@ $config = [
                     ],
                ],
           ],
-          'db' => $db,
+//          'db' => $db,
+          'db' => [
+            'on afterOpen' => function($event) {
+                $event->sender->createCommand("SET time_zone='+07:00';")->execute();
+            },
+            'tablePrefix' => 'tbl_',
+            $db
+          ],
           'urlManager' => [
                'enablePrettyUrl' => true,
                'showScriptName' => false,
