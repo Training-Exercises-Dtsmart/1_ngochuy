@@ -22,7 +22,7 @@ class PostForm extends Model
     {
         return [
             [['title', 'content', 'price', 'category_post_id', 'short_description', 'slug'], 'required'],
-            [['description', 'slug', 'content'], 'string'],
+            [['slug', 'content'], 'string'],
             [['price'], 'number'],
             [['category_post_id','status', 'user_id'], 'integer'],
             [['title', 'short_description', 'slug'], 'string', 'max' => 255],

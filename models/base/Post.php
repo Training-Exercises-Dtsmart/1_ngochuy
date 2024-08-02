@@ -8,7 +8,7 @@ use Yii;
 use yii\helpers\ArrayHelper;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
-use \app\models\PostQuery;
+use app\models\query\PostQuery;
 
 /**
  * This is the base-model class for table "posts".

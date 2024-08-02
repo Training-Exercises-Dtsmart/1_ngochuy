@@ -12,7 +12,7 @@ class PostSearch extends Post
     public function rules()
     {
         return [
-            [['id', 'category_post_id', 'user_id'], 'integer'],
+            [['id', 'user_id'], 'integer'],
             [['title', 'content', 'keyword'], 'safe']
         ];
     }

@@ -5,6 +5,7 @@ namespace app\controllers;
 use Yii;
 use yii\filters\auth\HttpBearerAuth;
 use yii\rest\Controller as BaseController;
+use yii\filters\Cors;
 
 class Controller extends BaseController
 {
@@ -27,9 +28,9 @@ class Controller extends BaseController
          ];
 
          $behaviors['authenticator']['except'] = ['options', 'login', 'sign-up'];
-       //   $behaviors['cors'] = [
-       //        'class' => Cors::class
-       //   ];
+          $behaviors['cors'] = [
+               'class' => Cors::class
+          ];
 
          return $behaviors;
     }

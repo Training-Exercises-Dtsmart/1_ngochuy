@@ -3,8 +3,8 @@
  * @Author: JustABusiness huysanti123456@gmail.com
  * @Date: 2024-07-24 16:26:01
  * @LastEditors: JustABusiness huysanti123456@gmail.com
- * @LastEditTime: 2024-07-25 14:33:40
- * @FilePath: modules/users/UserModule.php
+ * @LastEditTime: 2024-08-02 14:53:48
+ * @FilePath: modules/users/Module.php
  * @Description: 这是默认设置,可以在设置》工具》File Description中进行配置
  */
 

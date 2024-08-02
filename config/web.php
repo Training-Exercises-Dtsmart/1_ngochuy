@@ -68,6 +68,16 @@ $config = [
                          'class' => 'yii\log\FileTarget',
                          'levels' => ['error', 'warning'],
                     ],
+                    [
+                         'class' => 'yii\log\EmailTarget',
+                         'mailer' => 'mailer',
+                         'levels' => ['error', 'warning'],
+                         'message' => [
+                              'from' => ['huysanti123456@gmail.com'],
+                              'to' => ['daominhhung2203@gmail.com'],
+                              'subject' => 'Kiểm tra Log Lỗi API - {server}',
+                         ],
+                    ],
                ],
           ],
           'db' => $db,
