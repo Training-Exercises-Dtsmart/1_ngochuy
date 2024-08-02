@@ -205,5 +205,11 @@ https://documenter.getpostman.com/view/30812144/2sA3kXG25H
 <img width="1067" alt="Ảnh màn hình 2024-08-01 lúc 16 36 53" src="https://github.com/user-attachments/assets/2a9283fc-c9a5-460a-a785-9317e801956b">
 
 
+-------------------------------------- 
+
+### Email Logging 
+
+<img width="1171" alt="Ảnh màn hình 2024-08-02 lúc 16 36 49" src="https://github.com/user-attachments/assets/66cd2ec3-520d-4a3c-91ac-e9cd4fdc8ab4">
+
 
 
