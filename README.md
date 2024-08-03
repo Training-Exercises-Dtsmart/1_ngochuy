@@ -1,9 +1,28 @@
-<img width="1085" alt="Ảnh màn hình 2024-08-01 lúc 15 59 16" src="https://github.com/user-attachments/assets/0761e24d-2ee5-45e6-9fce-763f640c27f7"><img width="1085" alt="Ảnh màn hình 2024-08-01 lúc 15 59 16" src="https://github.com/user-attachments/assets/0ace4f6d-deda-46b7-a32a-d61a5b4e6ad5"># <h1> API link </h1>   ![tải xuống](https://github.com/user-attachments/assets/4c06ad3b-0105-4847-a3d3-9ea8e867d135) 
+
+# <h1> API link </h1>   ![tải xuống](https://github.com/user-attachments/assets/4c06ad3b-0105-4847-a3d3-9ea8e867d135) 
 
 
 https://documenter.getpostman.com/view/30812144/2sA3kXG25H
 
+# Create Yii2 Cronjob
 
++ Set cronjob to send email at 9:00am every morning from M -> F
+  
+<img width="1030" alt="Ảnh màn hình 2024-08-03 lúc 18 54 16" src="https://github.com/user-attachments/assets/2c2f7b36-08e4-42aa-b89f-c9d5401da83b">
+
+
+
++ File with name "cront" will be create in project :
+
+<img width="909" alt="Ảnh màn hình 2024-08-03 lúc 19 08 44" src="https://github.com/user-attachments/assets/8196efb5-cc8d-47d3-8a51-285618074791">
+
+
+
++ Run crontab from command :
+
+<img width="1088" alt="Ảnh màn hình 2024-08-03 lúc 18 54 29" src="https://github.com/user-attachments/assets/36c62c95-0e31-4bad-8d34-91208f045c0e">
+
+  
 # Config Redis & Yii2 
 
 <img width="694" alt="Ảnh màn hình 2024-07-25 lúc 17 12 33" src="https://github.com/user-attachments/assets/c7aef720-9d6a-4d2d-9baf-c7244067c179">
