@@ -51,6 +51,16 @@ class OrderSearch extends Order
                'pagination' => [
                     'pageSize' => 2,
                ],
+               'sort' => [
+                    'defaultOrder' => ['created_at' => SORT_DESC],
+                    'attributes' => [
+                         'created_at' => [
+                              'desc' => ['created_at' => SORT_DESC],
+                         ],
+                         'id' => ['id' => SORT_DESC],
+                    ],
+                    'enableMultiSort' => true,
+               ]
           ]);
 
           $this->load($params);

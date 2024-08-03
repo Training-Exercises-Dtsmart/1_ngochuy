@@ -46,6 +46,11 @@ class SignupForm extends \app\models\form\LoginForm
                $this->_user->password = $security->generatePasswordHash($this->password);
                $this->_user->access_token = $security->generateRandomString(255);
                $this->_user->verification_token = $security->generateRandomString() . '_' . time();
+
+               $auth = \Yii::$app->authManager;
+               $authorRole = $auth->getRole('author');
+               $auth->assign($authorRole, $this->_user->getId());
+
                if ($this->_user->save()) {
 //                    $this->sendVerificationEmail($this->_user);
                     return true;

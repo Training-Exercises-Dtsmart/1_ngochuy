@@ -36,12 +36,46 @@ class PostController extends Controller
      {
           $behaviors = parent::behaviors();
 
+          // Add rate limiter for specific actions
           if (in_array($this->action->id, ['index', 'create', 'update', 'delete'])) {
                $behaviors['rateLimiter'] = [
                     'class' => RateLimitBehavior::class,
                     'enableRateLimitHeaders' => true,
                ];
           }
+
+          // Add access control behavior
+          $behaviors['access'] = [
+               'class' => AccessControl::class,
+               'rules' => [
+                    [
+                         'allow' => true,
+                         'actions' => ['index'],
+                         'roles' => ['managePost'],
+                    ],
+                    [
+                         'allow' => true,
+                         'actions' => ['view'],
+                         'roles' => ['viewPost'],
+                    ],
+                    [
+                         'allow' => true,
+                         'actions' => ['create'],
+                         'roles' => ['createPost'],
+                    ],
+                    [
+                         'allow' => true,
+                         'actions' => ['update'],
+                         'roles' => ['updatePost'],
+                    ],
+                    [
+                         'allow' => true,
+                         'actions' => ['delete'],
+                         'roles' => ['deletePost'],
+                    ],
+               ],
+          ];
+
           return $behaviors;
      }
      public function actionIndex()

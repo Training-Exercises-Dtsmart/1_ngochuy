@@ -73,6 +73,10 @@ class BrandController extends Controller
                $transaction->rollBack();
                Yii::error('Error in actionCreate: ' . $e->getMessage(), __METHOD__);
                return $this->json(false, ['errors' => $e->getMessage()], 'Internal Server Error', HttpStatus::INTERNAL_SERVER_ERROR);
+          } catch (\Throwable $e) {
+               $transaction->rollBack();
+               Yii::error('Error in actionCreate: ' . $e->getMessage(), __METHOD__);
+               return $this->json(false, ['errors' => $e->getMessage()], 'Internal Server Error', HttpStatus::INTERNAL_SERVER_ERROR);
           }
      }
 
@@ -92,6 +96,10 @@ class BrandController extends Controller
                $transaction->commit();
                return $this->json(false, ['errors' => $brandForm->getErrors()], "Can't update brand", HttpStatus::BAD_REQUEST);
           } catch (\Exception $e) {
+               $transaction->rollBack();
+               Yii::error('Error in actionUpdate: ' . $e->getMessage(), __METHOD__);
+               return $this->json(false, ['errors' => $e->getMessage()], 'Internal Server Error', HttpStatus::INTERNAL_SERVER_ERROR);
+          } catch (\Throwable $e) {
                $transaction->rollBack();
                Yii::error('Error in actionUpdate: ' . $e->getMessage(), __METHOD__);
                return $this->json(false, ['errors' => $e->getMessage()], 'Internal Server Error', HttpStatus::INTERNAL_SERVER_ERROR);
@@ -116,6 +124,10 @@ class BrandController extends Controller
                $transaction->rollBack();
                Yii::error('Error in actionDelete: ' . $e->getMessage(), __METHOD__);
                return $this->json(false, ['errors' => $e->getMessage()], 'Internal Server Error', HttpStatus::INTERNAL_SERVER_ERROR);
+          } catch (\Throwable $e) {
+               $transaction->rollBack();
+               Yii::error('Error in actionDelete: ' . $e->getMessage(), __METHOD__);
+               return $this->json(false, ['errors' => $e->getMessage()], 'Internal Server Error', HttpStatus::INTERNAL_SERVER_ERROR);
           }
      }
 
@@ -129,7 +141,11 @@ class BrandController extends Controller
           } catch (\Exception $e) {
                Yii::error('Error in findModel: ' . $e->getMessage(), __METHOD__);
                return $this->json(false, ['errors' => $e->getMessage()], 'Internal Server Error', HttpStatus::INTERNAL_SERVER_ERROR);
+          } catch (\Throwable $e) {
+               Yii::error('Error in findModel: ' . $e->getMessage(), __METHOD__);
+               return $this->json(false, ['errors' => $e->getMessage()], 'Internal Server Error', HttpStatus::INTERNAL_SERVER_ERROR);
           }
+
      }
 
 }

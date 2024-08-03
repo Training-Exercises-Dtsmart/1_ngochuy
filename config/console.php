@@ -44,6 +44,14 @@ $config = [
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
+         'mailer' => [
+              'class' => 'yii\symfonymailer\Mailer',
+              'viewPath' => '@app/mail',
+              'useFileTransport' => false,
+              'transport' => [
+                   'dsn' => 'smtp://huysanti123456@gmail.com:buxkghayepzsgclb@smtp.gmail.com:587?encryption=tls',
+              ],
+         ],
          'queue' => [
               'class' => \yii\queue\db\Queue::class,
               'db' => 'db',
@@ -54,7 +62,7 @@ $config = [
          'authManager' => [
               'class' => 'yii\rbac\DbManager',
               // uncomment if you want to cache RBAC items hierarchy
-              // 'cache' => 'cache',
+               'cache' => 'cache',
          ],
         'log' => [
             'targets' => [

@@ -1,0 +1,2 @@
+0 9 * * 1-5 /usr/local/bin/php /Users/phamngochuy/code_source/yii2/day_2/day_2_training/yii email/send-daily-email
+

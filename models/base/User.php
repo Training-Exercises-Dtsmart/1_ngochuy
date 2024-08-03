@@ -64,7 +64,19 @@ abstract class User extends \yii\db\ActiveRecord implements  \yii\web\IdentityIn
     return $behaviors;
     }
 
-    /**
+    public function beforeSave($insert)
+    {
+         if (parent::beforeSave($insert)) {
+              if ($this->isNewRecord)
+              {
+                   $this->auth_key = Yii::$app->security->generateRandomString();
+              }
+              return true;
+         }
+         return false;
+    }
+
+     /**
      * @inheritdoc
      */
     public function rules()

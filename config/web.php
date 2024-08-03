@@ -36,8 +36,12 @@ $config = [
 //               'class' => 'yii\caching\FileCache',
 //               'class' => 'yii\caching\AppCache',
                'class' => 'yii\redis\Cache',
-               'redis' => 'redis',
-//               'keyPrefix' => 'myapp'
+               'redis' => [
+                    'hostname' => 'localhost',
+                    'port' => 6379,
+                    'database' => 0,
+               ],
+//                  'keyPrefix' => 'myapp'
           ],
           'user' => [
                'identityClass' => 'app\models\User',
@@ -80,14 +84,14 @@ $config = [
                     ],
                ],
           ],
-//          'db' => $db,
-          'db' => [
-            'on afterOpen' => function($event) {
-                $event->sender->createCommand("SET time_zone='+07:00';")->execute();
-            },
-            'tablePrefix' => 'tbl_',
-            $db
-          ],
+          'db' => $db,
+//          'db' => [
+//            'on afterOpen' => function($event) {
+//                $event->sender->createCommand("SET time_zone='+07:00';")->execute();
+//            },
+//            'tablePrefix' => 'tbl_',
+//            $db
+//          ],
           'urlManager' => [
                'enablePrettyUrl' => true,
                'showScriptName' => false,
