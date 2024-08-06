@@ -7,7 +7,7 @@ namespace app\models\base;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\behaviors\TimestampBehavior;
-use \app\models\query\CategoryPostQuery;
+use \app\models\CategoryPostQuery;
 
 /**
  * This is the base-model class for table "category_post".

@@ -13,11 +13,10 @@ use \app\models\AuthAssignmentQuery;
  * This is the base-model class for table "auth_assignment".
  *
  * @property string $item_name
- * @property integer $user_id
+ * @property string $user_id
  * @property integer $created_at
  *
  * @property \app\models\AuthItem $itemName
- * @property \app\models\User $user
  */
 abstract class AuthAssignment extends \yii\db\ActiveRecord
 {
@@ -52,11 +51,9 @@ abstract class AuthAssignment extends \yii\db\ActiveRecord
         $parentRules = parent::rules();
         return ArrayHelper::merge($parentRules, [
             [['item_name', 'user_id'], 'required'],
-            [['user_id'], 'integer'],
-            [['item_name'], 'string', 'max' => 64],
-            [['item_name'], 'unique'],
-            [['item_name'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\AuthItem::class, 'targetAttribute' => ['item_name' => 'name']],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\User::class, 'targetAttribute' => ['user_id' => 'id']]
+            [['item_name', 'user_id'], 'string', 'max' => 64],
+            [['item_name', 'user_id'], 'unique', 'targetAttribute' => ['item_name', 'user_id']],
+            [['item_name'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\AuthItem::class, 'targetAttribute' => ['item_name' => 'name']]
         ]);
     }
 
@@ -67,8 +64,8 @@ abstract class AuthAssignment extends \yii\db\ActiveRecord
     {
         return ArrayHelper::merge(parent::attributeLabels(), [
             'item_name' => 'Item Name',
-            'created_at' => 'Created At',
             'user_id' => 'User ID',
+            'created_at' => 'Created At',
         ]);
     }
 
@@ -78,14 +75,6 @@ abstract class AuthAssignment extends \yii\db\ActiveRecord
     public function getItemName()
     {
         return $this->hasOne(\app\models\AuthItem::class, ['name' => 'item_name']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUser()
-    {
-        return $this->hasOne(\app\models\User::class, ['id' => 'user_id']);
     }
 
     /**

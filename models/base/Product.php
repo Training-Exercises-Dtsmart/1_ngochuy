@@ -8,9 +8,7 @@ use Yii;
 use yii\helpers\ArrayHelper;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
-use \app\models\query\ProductQuery;
-use yii2tech\ar\softdelete\SoftDeleteBehavior;
-use yii2tech\ar\position\PositionBehavior;
+use \app\models\ProductQuery;
 
 /**
  * This is the base-model class for table "products".
@@ -62,18 +60,7 @@ abstract class Product extends \yii\db\ActiveRecord
         $behaviors['timestamp'] = [
             'class' => TimestampBehavior::class,
             'value' => (new \DateTime())->format('Y-m-d H:i:s'),
-        ];
-        $behaviors['softDelete'] = [
-            'class' => SoftDeleteBehavior::class,
-            'softDeleteAttributeValues' => [
-                'deleted_at' => date('Y-m-d H:i:s'),
-            ],
-            'replaceRegularDelete' => true
-        ];
-        $behaviors['position'] = [
-            'class' => PositionBehavior::class,
-            'positionAttribute' => 'position',
-        ];
+                        ];
         
     return $behaviors;
     }

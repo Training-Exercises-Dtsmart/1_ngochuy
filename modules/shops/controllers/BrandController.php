@@ -2,14 +2,16 @@
 
 namespace app\modules\shops\controllers;
 
+use Yii;
 use app\components\CustomSerializer;
 use app\components\RateLimitBehavior;
 use app\controllers\Controller;
 use app\modules\enums\HttpStatus;
+use app\modules\shops\forms\CalculateForm;
 use app\modules\shops\forms\BrandForm;
 use app\repositories\BrandRepository;
 use app\services\BrandService;
-use Yii;
+
 
 /**
  * BrandController implements the CRUD actions for Brand model.
@@ -147,5 +149,37 @@ class BrandController extends Controller
           }
 
      }
+
+     public function actionMultiple()
+     {
+          $data = Yii::$app->request->post();
+          $data = implode(',', $data);
+          $data = explode(',', $data);
+
+          $numberA = $data[0];
+          $numberB = $data[1];
+
+          if (is_numeric($numberA) && is_numeric($numberB)) {
+               if (strlen($numberA) <= 255 && strlen($numberB) <= 255) {
+                    $a_len = strlen($numberA);
+                    $b_len = strlen($numberB);
+
+                    $result = 0;
+                    for ($i = 0; $i < $a_len; $i++) {
+                         for ($j = 0; $j < $b_len; $j++) {
+                              $digit_a = (int)substr($numberA, $a_len - 1 - $i, 1);
+                              $digit_b = (int)substr($numberB, $b_len - 1 - $j, 1);
+                              $partial_product = $digit_a * $digit_b * pow(10, $i + $j);
+                              $result += $partial_product;
+                         }
+                    }
+                    $result = number_format($result, 2, '.', '');
+                    return $this->json(true, $result, 'success', HttpStatus::OK);
+               }
+          }
+          return $this->json(true, [], 'Dữ liệu không hợp lệ', HttpStatus::BAD_REQUEST);
+
+     }
+
 
 }

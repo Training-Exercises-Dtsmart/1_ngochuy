@@ -42,74 +42,74 @@ use yii\filters\RateLimitInterface;
 abstract class User extends \yii\db\ActiveRecord implements  \yii\web\IdentityInterface, RateLimitInterface
 {
 
-    /**
-     * @inheritdoc
-     */
-    public static function tableName()
-    {
-        return 'users';
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function behaviors()
-    {
-        $behaviors = parent::behaviors();
-        $behaviors['timestamp'] = [
-            'class' => TimestampBehavior::class,
-            'value' => (new \DateTime())->format('Y-m-d H:i:s'),
-                        ];
-        
-    return $behaviors;
-    }
-
-    public function beforeSave($insert)
-    {
-         if (parent::beforeSave($insert)) {
-              if ($this->isNewRecord)
-              {
-                   $this->auth_key = Yii::$app->security->generateRandomString();
-              }
-              return true;
-         }
-         return false;
-    }
+     /**
+      * @inheritdoc
+      */
+     public static function tableName()
+     {
+          return 'users';
+     }
 
      /**
-     * @inheritdoc
-     */
-    public function rules()
-    {
-        $parentRules = parent::rules();
-        return ArrayHelper::merge($parentRules, [
-            [['access_token'], 'required'],
-            [['age'], 'integer'],
-            [['deleted_at'], 'safe'],
-            [['name', 'address', 'email', 'phone', 'password', 'access_token', 'verification_token'], 'string', 'max' => 255]
-        ]);
-    }
+      * @inheritdoc
+      */
+     public function behaviors()
+     {
+          $behaviors = parent::behaviors();
+          $behaviors['timestamp'] = [
+               'class' => TimestampBehavior::class,
+               'value' => (new \DateTime())->format('Y-m-d H:i:s'),
+          ];
 
-    /**
-     * @inheritdoc
-     */
-    public function attributeLabels()
-    {
-        return ArrayHelper::merge(parent::attributeLabels(), [
-            'id' => 'ID',
-            'name' => 'Name',
-            'address' => 'Address',
-            'email' => 'Email',
-            'phone' => 'Phone',
-            'password' => 'Password',
-            'access_token' => 'Access Token',
-            'verification_token' => 'Verification Token',
-            'age' => 'Age',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
-            'deleted_at' => 'Deleted At',
-        ]);
-    }
+          return $behaviors;
+     }
+
+     public function beforeSave($insert)
+     {
+          if (parent::beforeSave($insert)) {
+               if ($this->isNewRecord)
+               {
+                    $this->auth_key = Yii::$app->security->generateRandomString();
+               }
+               return true;
+          }
+          return false;
+     }
+
+     /**
+      * @inheritdoc
+      */
+     public function rules()
+     {
+          $parentRules = parent::rules();
+          return ArrayHelper::merge($parentRules, [
+               [['access_token'], 'required'],
+               [['age'], 'integer'],
+               [['deleted_at'], 'safe'],
+               [['name', 'address', 'email', 'phone', 'password', 'access_token', 'verification_token'], 'string', 'max' => 255]
+          ]);
+     }
+
+     /**
+      * @inheritdoc
+      */
+     public function attributeLabels()
+     {
+          return ArrayHelper::merge(parent::attributeLabels(), [
+               'id' => 'ID',
+               'name' => 'Name',
+               'address' => 'Address',
+               'email' => 'Email',
+               'phone' => 'Phone',
+               'password' => 'Password',
+               'access_token' => 'Access Token',
+               'verification_token' => 'Verification Token',
+               'age' => 'Age',
+               'created_at' => 'Created At',
+               'updated_at' => 'Updated At',
+               'deleted_at' => 'Deleted At',
+          ]);
+     }
 
      /**
       * Returns the maximum number of allowed requests and the window size.
@@ -152,109 +152,109 @@ abstract class User extends \yii\db\ActiveRecord implements  \yii\web\IdentityIn
           $this->save(false);
      }
      /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getAuthAssignments()
-    {
-        return $this->hasMany(\app\models\AuthAssignment::class, ['user_id' => 'id']);
-    }
+      * @return \yii\db\ActiveQuery
+      */
+     public function getAuthAssignments()
+     {
+          return $this->hasMany(\app\models\AuthAssignment::class, ['user_id' => 'id']);
+     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCarts()
-    {
-        return $this->hasMany(\app\models\Cart::class, ['user_id' => 'id']);
-    }
+     /**
+      * @return \yii\db\ActiveQuery
+      */
+     public function getCarts()
+     {
+          return $this->hasMany(\app\models\Cart::class, ['user_id' => 'id']);
+     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCategoryPosts()
-    {
-        return $this->hasMany(\app\models\CategoryPost::class, ['user_id' => 'id']);
-    }
+     /**
+      * @return \yii\db\ActiveQuery
+      */
+     public function getCategoryPosts()
+     {
+          return $this->hasMany(\app\models\CategoryPost::class, ['user_id' => 'id']);
+     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getComments()
-    {
-        return $this->hasMany(\app\models\Comment::class, ['created_by' => 'id']);
-    }
+     /**
+      * @return \yii\db\ActiveQuery
+      */
+     public function getComments()
+     {
+          return $this->hasMany(\app\models\Comment::class, ['created_by' => 'id']);
+     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getOrderItems()
-    {
-        return $this->hasMany(\app\models\OrderItem::class, ['created_by' => 'id']);
-    }
+     /**
+      * @return \yii\db\ActiveQuery
+      */
+     public function getOrderItems()
+     {
+          return $this->hasMany(\app\models\OrderItem::class, ['created_by' => 'id']);
+     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getOrders()
-    {
-        return $this->hasMany(\app\models\Order::class, ['customer_id' => 'id']);
-    }
+     /**
+      * @return \yii\db\ActiveQuery
+      */
+     public function getOrders()
+     {
+          return $this->hasMany(\app\models\Order::class, ['customer_id' => 'id']);
+     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getPosts()
-    {
-        return $this->hasMany(\app\models\Post::class, ['created_by' => 'id']);
-    }
+     /**
+      * @return \yii\db\ActiveQuery
+      */
+     public function getPosts()
+     {
+          return $this->hasMany(\app\models\Post::class, ['created_by' => 'id']);
+     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getPosts0()
-    {
-        return $this->hasMany(\app\models\Post::class, ['user_id' => 'id']);
-    }
+     /**
+      * @return \yii\db\ActiveQuery
+      */
+     public function getPosts0()
+     {
+          return $this->hasMany(\app\models\Post::class, ['user_id' => 'id']);
+     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getProducts()
-    {
-        return $this->hasMany(\app\models\Product::class, ['created_by' => 'id']);
-    }
+     /**
+      * @return \yii\db\ActiveQuery
+      */
+     public function getProducts()
+     {
+          return $this->hasMany(\app\models\Product::class, ['created_by' => 'id']);
+     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getProducts0()
-    {
-        return $this->hasMany(\app\models\Product::class, ['updated_by' => 'id']);
-    }
+     /**
+      * @return \yii\db\ActiveQuery
+      */
+     public function getProducts0()
+     {
+          return $this->hasMany(\app\models\Product::class, ['updated_by' => 'id']);
+     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUserAddresses()
-    {
-        return $this->hasMany(\app\models\UserAddress::class, ['user_id' => 'id']);
-    }
+     /**
+      * @return \yii\db\ActiveQuery
+      */
+     public function getUserAddresses()
+     {
+          return $this->hasMany(\app\models\UserAddress::class, ['user_id' => 'id']);
+     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUserDeliveryAddresses()
-    {
-        return $this->hasMany(\app\models\UserDeliveryAddress::class, ['user_id' => 'id']);
-    }
+     /**
+      * @return \yii\db\ActiveQuery
+      */
+     public function getUserDeliveryAddresses()
+     {
+          return $this->hasMany(\app\models\UserDeliveryAddress::class, ['user_id' => 'id']);
+     }
 
-    /**
-     * @inheritdoc
-     * @return UserQuery the active query used by this AR class.
-     */
-    public static function find()
-    {
-        return new UserQuery(static::class);
-    }
+     /**
+      * @inheritdoc
+      * @return UserQuery the active query used by this AR class.
+      */
+     public static function find()
+     {
+          return new UserQuery(static::class);
+     }
      public static function findIdentity($id)
      {
           return self::findOne($id);

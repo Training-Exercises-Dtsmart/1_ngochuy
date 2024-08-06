@@ -6,16 +6,18 @@ namespace app\models\base;
 
 use Yii;
 use yii\helpers\ArrayHelper;
-use \app\models\BrandQuery;
+use \app\models\SmQuery;
 
 /**
- * This is the base-model class for table "brands".
+ * This is the base-model class for table "sms".
  *
  * @property integer $id
- * @property string $name
- * @property integer $status
+ * @property string $phone
+ * @property integer $sms
+ * @property integer $try_count
+ * @property integer $send_at
  */
-abstract class Brand extends \yii\db\ActiveRecord
+abstract class Sm extends \yii\db\ActiveRecord
 {
 
     /**
@@ -23,7 +25,7 @@ abstract class Brand extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'brands';
+        return 'sms';
     }
 
     /**
@@ -33,8 +35,8 @@ abstract class Brand extends \yii\db\ActiveRecord
     {
         $parentRules = parent::rules();
         return ArrayHelper::merge($parentRules, [
-            [['status'], 'integer'],
-            [['name'], 'string', 'max' => 255]
+            [['sms', 'try_count', 'send_at'], 'integer'],
+            [['phone'], 'string', 'max' => 255]
         ]);
     }
 
@@ -45,17 +47,19 @@ abstract class Brand extends \yii\db\ActiveRecord
     {
         return ArrayHelper::merge(parent::attributeLabels(), [
             'id' => 'ID',
-            'name' => 'Name',
-            'status' => 'Status',
+            'phone' => 'Phone',
+            'sms' => 'Sms',
+            'try_count' => 'Try Count',
+            'send_at' => 'Send At',
         ]);
     }
 
     /**
      * @inheritdoc
-     * @return BrandQuery the active query used by this AR class.
+     * @return SmQuery the active query used by this AR class.
      */
     public static function find()
     {
-        return new BrandQuery(static::class);
+        return new SmQuery(static::class);
     }
 }

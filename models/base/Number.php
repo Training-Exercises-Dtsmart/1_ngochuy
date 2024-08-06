@@ -6,16 +6,16 @@ namespace app\models\base;
 
 use Yii;
 use yii\helpers\ArrayHelper;
-use \app\models\BrandQuery;
+use \app\models\NumberQuery;
 
 /**
- * This is the base-model class for table "brands".
+ * This is the base-model class for table "number".
  *
  * @property integer $id
- * @property string $name
- * @property integer $status
+ * @property integer $a
+ * @property integer $b
  */
-abstract class Brand extends \yii\db\ActiveRecord
+abstract class Number extends \yii\db\ActiveRecord
 {
 
     /**
@@ -23,7 +23,7 @@ abstract class Brand extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'brands';
+        return 'number';
     }
 
     /**
@@ -33,8 +33,8 @@ abstract class Brand extends \yii\db\ActiveRecord
     {
         $parentRules = parent::rules();
         return ArrayHelper::merge($parentRules, [
-            [['status'], 'integer'],
-            [['name'], 'string', 'max' => 255]
+            [['a', 'b'], 'integer'],
+            [['a', 'b'], 'required' ]
         ]);
     }
 
@@ -45,17 +45,17 @@ abstract class Brand extends \yii\db\ActiveRecord
     {
         return ArrayHelper::merge(parent::attributeLabels(), [
             'id' => 'ID',
-            'name' => 'Name',
-            'status' => 'Status',
+            'a' => 'A',
+            'b' => 'B',
         ]);
     }
 
     /**
      * @inheritdoc
-     * @return BrandQuery the active query used by this AR class.
+     * @return NumberQuery the active query used by this AR class.
      */
     public static function find()
     {
-        return new BrandQuery(static::class);
+        return new NumberQuery(static::class);
     }
 }

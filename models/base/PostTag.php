@@ -7,22 +7,16 @@ namespace app\models\base;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\behaviors\TimestampBehavior;
-use \app\models\CategoryProductQuery;
+use \app\models\PostTagQuery;
 
 /**
- * This is the base-model class for table "category_product".
+ * This is the base-model class for table "post_tag".
  *
- * @property integer $id
- * @property string $name
- * @property string $slug
- * @property string $description
- * @property string $deleted_at
+ * @property integer $post_id
+ * @property integer $tag_id
  * @property string $created_at
- * @property string $updated_at
- *
- * @property \app\models\Product[] $products
  */
-abstract class CategoryProduct extends \yii\db\ActiveRecord
+abstract class PostTag extends \yii\db\ActiveRecord
 {
 
     /**
@@ -30,7 +24,7 @@ abstract class CategoryProduct extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'category_product';
+        return 'post_tag';
     }
 
     /**
@@ -42,7 +36,8 @@ abstract class CategoryProduct extends \yii\db\ActiveRecord
         $behaviors['timestamp'] = [
             'class' => TimestampBehavior::class,
             'value' => (new \DateTime())->format('Y-m-d H:i:s'),
-                        ];
+                                    'updatedAtAttribute' => false,
+        ];
         
     return $behaviors;
     }
@@ -54,9 +49,9 @@ abstract class CategoryProduct extends \yii\db\ActiveRecord
     {
         $parentRules = parent::rules();
         return ArrayHelper::merge($parentRules, [
-            [['description'], 'string'],
-            [['deleted_at'], 'safe'],
-            [['name', 'slug'], 'string', 'max' => 255]
+            [['post_id', 'tag_id'], 'required'],
+            [['post_id', 'tag_id'], 'integer'],
+            [['post_id', 'tag_id'], 'unique', 'targetAttribute' => ['post_id', 'tag_id']]
         ]);
     }
 
@@ -66,30 +61,18 @@ abstract class CategoryProduct extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return ArrayHelper::merge(parent::attributeLabels(), [
-            'id' => 'ID',
-            'name' => 'Name',
-            'slug' => 'Slug',
-            'description' => 'Description',
+            'post_id' => 'Post ID',
+            'tag_id' => 'Tag ID',
             'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
-            'deleted_at' => 'Deleted At',
         ]);
     }
 
     /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getProducts()
-    {
-        return $this->hasMany(\app\models\Product::class, ['category_product_id' => 'id']);
-    }
-
-    /**
      * @inheritdoc
-     * @return CategoryProductQuery the active query used by this AR class.
+     * @return PostTagQuery the active query used by this AR class.
      */
     public static function find()
     {
-        return new CategoryProductQuery(static::class);
+        return new PostTagQuery(static::class);
     }
 }

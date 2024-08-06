@@ -2,9 +2,9 @@
 
 namespace app\modules\users\controllers;
 
+use Yii;
 use app\components\RateLimitBehavior;
 use app\modules\users\forms\SignInForm;
-use Yii;
 use app\components\CustomSerializer;
 use app\repositories\UserRepository;
 use app\controllers\Controller;

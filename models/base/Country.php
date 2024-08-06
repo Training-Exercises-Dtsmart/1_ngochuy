@@ -6,16 +6,16 @@ namespace app\models\base;
 
 use Yii;
 use yii\helpers\ArrayHelper;
-use \app\models\BrandQuery;
+use \app\models\CountryQuery;
 
 /**
- * This is the base-model class for table "brands".
+ * This is the base-model class for table "country".
  *
- * @property integer $id
+ * @property string $code
  * @property string $name
- * @property integer $status
+ * @property integer $population
  */
-abstract class Brand extends \yii\db\ActiveRecord
+abstract class Country extends \yii\db\ActiveRecord
 {
 
     /**
@@ -23,7 +23,7 @@ abstract class Brand extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'brands';
+        return 'country';
     }
 
     /**
@@ -33,8 +33,11 @@ abstract class Brand extends \yii\db\ActiveRecord
     {
         $parentRules = parent::rules();
         return ArrayHelper::merge($parentRules, [
-            [['status'], 'integer'],
-            [['name'], 'string', 'max' => 255]
+            [['code'], 'required'],
+            [['population'], 'integer'],
+            [['code'], 'string', 'max' => 2],
+            [['name'], 'string', 'max' => 52],
+            [['code'], 'unique']
         ]);
     }
 
@@ -44,18 +47,18 @@ abstract class Brand extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return ArrayHelper::merge(parent::attributeLabels(), [
-            'id' => 'ID',
+            'code' => 'Code',
             'name' => 'Name',
-            'status' => 'Status',
+            'population' => 'Population',
         ]);
     }
 
     /**
      * @inheritdoc
-     * @return BrandQuery the active query used by this AR class.
+     * @return CountryQuery the active query used by this AR class.
      */
     public static function find()
     {
-        return new BrandQuery(static::class);
+        return new CountryQuery(static::class);
     }
 }

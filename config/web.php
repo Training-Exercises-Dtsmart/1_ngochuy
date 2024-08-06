@@ -132,6 +132,9 @@ $config = [
                               'shops' => [
                                    'class' => 'app\modules\shops\Module',
                               ],
+                              'maths' => [
+                                   'clas' => 'app\modules\math\Module',
+                              ]
                          ],
                     ],
                ],

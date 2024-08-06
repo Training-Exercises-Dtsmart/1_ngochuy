@@ -8,7 +8,7 @@ use Yii;
 use yii\helpers\ArrayHelper;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
-use \app\models\query\CommentQuery;
+use \app\models\CommentQuery;
 
 /**
  * This is the base-model class for table "comment".

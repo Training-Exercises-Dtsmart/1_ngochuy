@@ -7,22 +7,18 @@ namespace app\models\base;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\behaviors\TimestampBehavior;
-use \app\models\CategoryProductQuery;
+use \app\models\RandomQuery;
 
 /**
- * This is the base-model class for table "category_product".
+ * This is the base-model class for table "random".
  *
  * @property integer $id
  * @property string $name
- * @property string $slug
- * @property string $description
- * @property string $deleted_at
- * @property string $created_at
- * @property string $updated_at
- *
- * @property \app\models\Product[] $products
+ * @property integer $deleted_at
+ * @property integer $created_at
+ * @property integer $updated_at
  */
-abstract class CategoryProduct extends \yii\db\ActiveRecord
+abstract class Random extends \yii\db\ActiveRecord
 {
 
     /**
@@ -30,7 +26,7 @@ abstract class CategoryProduct extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'category_product';
+        return 'random';
     }
 
     /**
@@ -41,7 +37,6 @@ abstract class CategoryProduct extends \yii\db\ActiveRecord
         $behaviors = parent::behaviors();
         $behaviors['timestamp'] = [
             'class' => TimestampBehavior::class,
-            'value' => (new \DateTime())->format('Y-m-d H:i:s'),
                         ];
         
     return $behaviors;
@@ -54,9 +49,8 @@ abstract class CategoryProduct extends \yii\db\ActiveRecord
     {
         $parentRules = parent::rules();
         return ArrayHelper::merge($parentRules, [
-            [['description'], 'string'],
-            [['deleted_at'], 'safe'],
-            [['name', 'slug'], 'string', 'max' => 255]
+            [['deleted_at'], 'integer'],
+            [['name'], 'string', 'max' => 255]
         ]);
     }
 
@@ -68,28 +62,18 @@ abstract class CategoryProduct extends \yii\db\ActiveRecord
         return ArrayHelper::merge(parent::attributeLabels(), [
             'id' => 'ID',
             'name' => 'Name',
-            'slug' => 'Slug',
-            'description' => 'Description',
+            'deleted_at' => 'Deleted At',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
-            'deleted_at' => 'Deleted At',
         ]);
     }
 
     /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getProducts()
-    {
-        return $this->hasMany(\app\models\Product::class, ['category_product_id' => 'id']);
-    }
-
-    /**
      * @inheritdoc
-     * @return CategoryProductQuery the active query used by this AR class.
+     * @return RandomQuery the active query used by this AR class.
      */
     public static function find()
     {
-        return new CategoryProductQuery(static::class);
+        return new RandomQuery(static::class);
     }
 }

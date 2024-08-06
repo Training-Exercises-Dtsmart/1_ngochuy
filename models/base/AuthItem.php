@@ -20,7 +20,7 @@ use \app\models\AuthItemQuery;
  * @property integer $created_at
  * @property integer $updated_at
  *
- * @property \app\models\AuthAssignment $authAssignment
+ * @property \app\models\AuthAssignment[] $authAssignments
  * @property \app\models\AuthItemChild[] $authItemChildren
  * @property \app\models\AuthItemChild[] $authItemChildren0
  * @property \app\models\AuthItem[] $children
@@ -86,9 +86,9 @@ abstract class AuthItem extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAuthAssignment()
+    public function getAuthAssignments()
     {
-        return $this->hasOne(\app\models\AuthAssignment::class, ['item_name' => 'name']);
+        return $this->hasMany(\app\models\AuthAssignment::class, ['item_name' => 'name']);
     }
 
     /**

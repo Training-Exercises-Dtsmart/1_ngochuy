@@ -4,9 +4,10 @@
 
 namespace app\models\base;
 
-use app\models\query\PaymentTypeQuery;
-use yii\behaviors\TimestampBehavior;
+use Yii;
 use yii\helpers\ArrayHelper;
+use yii\behaviors\TimestampBehavior;
+use \app\models\PaymentTypeQuery;
 
 /**
  * This is the base-model class for table "payment_types".
