@@ -78,7 +78,7 @@ $config = [
                          'levels' => ['error', 'warning'],
                          'message' => [
                               'from' => ['huysanti123456@gmail.com'],
-                              'to' => ['daominhhung2203@gmail.com'],
+                              'to' => ['toan70868@gmail.com'],
                               'subject' => 'Kiểm tra Log Lỗi API - {server}',
                          ],
                     ],
